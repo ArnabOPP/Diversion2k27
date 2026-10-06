@@ -2,10 +2,23 @@
 
 .about {
   position: relative;
+  z-index: 2;
+  margin-top: -100vh; /* slides up over the pinned video like a curtain */
   padding: max(7.5rem, 16vh) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 8vh, 6rem); /* top clears the fixed header logo */
-  background: linear-gradient(189deg, #1e1e37 0%, #151528 50%, #0c0d1c 100%);
   color: #fff;
   font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+/* One continuous gradient, faded in from transparent with a mask: the title sits over the video at first
+   and the dark colour comes in over the first viewport. (Two stacked gradients left a visible seam.) */
+.about::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(189deg, #1e1e37 0%, #151528 50%, #0c0d1c 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
+  mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
 }
 
 .about__inner {
@@ -39,6 +52,7 @@
 
 .about__img {
   display: block;
+  will-change: transform;
   height: auto;
   object-fit: cover;
 }

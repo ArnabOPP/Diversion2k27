@@ -1,8 +1,8 @@
 /* Tall section: hero and video stay pinned while scrolling through it.
-   Height = 1 viewport (pinned) + 0.8 (cross-fade) + 4 (video scrub) viewports */
+   Height = 1 viewport (pinned) + 0.8 (cross-fade) + 4 (video scrub) + 1 (next section slides over) */
 .scroll-video {
   position: relative;
-  height: 580vh;
+  height: 680vh;
   background: #000;
 }
 
