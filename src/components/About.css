@@ -16,6 +16,17 @@
   padding-bottom: clamp(3rem, 8vh, 6rem);
 }
 
+/* The second copy is centred (the first stays right-aligned) */
+.about--last .about__inner {
+  margin: 0 auto;
+}
+
+/* Venue tagline is written as two explicit lines, so it must stay unwrapped and wider than the 11em default */
+.about--last .about__tagline {
+  max-width: none;
+  white-space: pre; /* never wrap: each written line stays on one line */
+}
+
 /* One continuous gradient, faded in from transparent with a mask: the title sits over the video at first
    and the dark colour comes in over the first viewport. (Two stacked gradients left a visible seam.) */
 .about::before {
@@ -45,6 +56,7 @@
 .about__tagline {
   margin: 2.4rem 0 1.6rem;
   max-width: 11em;
+  white-space: pre-line; /* keeps line breaks written in the text */
   font: 700 clamp(1.5rem, 2.4vw, 1.9rem) / 1.1 'DM Sans', system-ui, sans-serif;
   color: #f7a8c9;
   text-shadow: 0 0 14px rgb(247 168 201 / 0.35);

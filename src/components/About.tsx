@@ -7,6 +7,35 @@ const asset = (name: string) => encodeURI(`/${name}`)
 // Photos drift at slightly different speeds as the section scrolls past
 const PARALLAX = { talk: 0.06, hack: 0.1, team: 0.18 }
 
+const COPY = {
+  about: {
+    title: 'ABOUT DIVERSION',
+    tagline: 'Where ideas turn into something real.',
+    paragraphs: [
+      'Diversion is IEM�s annual flagship hackathon � a space where builders, designers and problem-solvers come together to create, learn and compete. Across every edition, students spend intense hours turning bold ideas into working projects.',
+      'Organised by the IEM-ACM Student Chapter, Diversion brings together technology, collaboration and mentorship across fields like AI, web development, app development, IoT, cloud and more.',
+    ],
+    photos: {
+      talk: { file: 'about 2.png', alt: 'Participants presenting their project' },
+      hack: { file: 'about 3.png', alt: 'Participants hacking at their laptops' },
+      team: { file: 'about 1.png', alt: 'A winning team celebrating with their trophy' },
+    },
+  },
+  venue: {
+    title: 'VENUE',
+    tagline: 'IEM GURUKUL CAMPUS\nCollege More', // the \n line break is kept (white-space: pre-line)
+    paragraphs: [
+      "Diversion is hosted at the IEM Gurukul Campus in Salt Lake Sector V, the Electronics Complex that is Kolkata's IT heartland. Its academic blocks, labs and open halls give every team plenty of room to create, learn, build and compete.",
+      'Part of the Institute of Engineering & Management, the campus has fast Wi-Fi, a digital library and a cafeteria, with the Ashram Campus a short walk away, keeping teams close to mentors.',
+    ],
+    photos: {
+      talk: { file: 'Scroll Down (13).png', alt: 'Green wall of plants on the IEM campus' },
+      hack: { file: 'Scroll Down (12).png', alt: 'The glass-fronted IEM campus building' },
+      team: { file: 'Scroll Down (14).png', alt: 'The basketball court on the IEM campus' },
+    },
+  },
+}
+
 type PhotoName = keyof typeof PARALLAX
 type OpenPhoto = { src: string; alt: string }
 
@@ -17,6 +46,7 @@ interface AboutProps {
 
 export default function About({ id = 'about', last = false }: AboutProps) {
   const ref = useRef<HTMLElement>(null)
+  const copy = last ? COPY.venue : COPY.about
   const [lightbox, setLightbox] = useState<OpenPhoto | null>(null)
 
   useEffect(() => {
@@ -45,23 +75,17 @@ export default function About({ id = 'about', last = false }: AboutProps) {
     <section ref={ref} id={id} className={`about${last ? ' about--last' : ''}`}>
       <div className="about__inner">
         <div className="about__copy">
-          <h2 className="about__title">ABOUT DIVERSION</h2>
-          <h3 className="about__tagline">Where ideas turn into something real.</h3>
-          <p>
-            Diversion is IEM’s annual flagship hackathon — a space where builders, designers and problem-solvers come
-            together to create, learn and compete. Across every edition, students spend intense hours turning bold ideas
-            into working projects.
-          </p>
-          <p>
-            Organised by the IEM-ACM Student Chapter, Diversion brings together technology, collaboration and mentorship
-            across fields like AI, web development, app development, IoT, cloud and more.
-          </p>
-          <Photo name="talk" src={asset('about 2.png')} alt="Participants presenting their project" onOpen={setLightbox} />
+          <h2 className="about__title">{copy.title}</h2>
+          <h3 className="about__tagline">{copy.tagline}</h3>
+          {copy.paragraphs.map((text) => (
+            <p key={text}>{text}</p>
+          ))}
+          <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
         </div>
 
         <div className="about__photos">
-          <Photo name="hack" src={asset('about 3.png')} alt="Participants hacking at their laptops" onOpen={setLightbox} />
-          <Photo name="team" src={asset('about 1.png')} alt="A winning team celebrating with their trophy" onOpen={setLightbox} />
+          <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
+          <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
         </div>
       </div>
 
