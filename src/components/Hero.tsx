@@ -1,8 +1,12 @@
+import { useState } from 'react'
+import Menu from './Menu'
 import './Hero.css'
 
 const asset = (name: string) => encodeURI(`/${name}`)
 
 export default function Hero() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   return (
     <section className="hero">
       <img className="hero__bg" src={asset('hero bg.png')} alt="" />
@@ -18,7 +22,7 @@ export default function Hero() {
       <img className="hero__logo" src={asset('diversion logo.png')} alt="Diversion 2K27" />
       <img className="hero__mlh" src={asset('mlh 2027 tag.png')} alt="MLH Official 2027 Season" />
 
-      <button className="hero__menu" type="button" aria-label="Open menu">
+      <button className="hero__menu" type="button" aria-label="Open menu" onClick={() => setMenuOpen(true)}>
         <span />
         <span />
       </button>
@@ -30,6 +34,8 @@ export default function Hero() {
         </svg>
         <span>Scroll Down</span>
       </div>
+
+      <Menu open={menuOpen} onClose={() => setMenuOpen(false)} />
     </section>
   )
 }

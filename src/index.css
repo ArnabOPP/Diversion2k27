@@ -24,3 +24,52 @@ body {
   from { opacity: 1; }
   to { opacity: 0; }
 }
+
+/* Screen transitions (like the GTA VI site): the old screen shrinks slightly and fades out,
+   the new one fades in from slightly larger and settles to its normal size */
+.hero-wait {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.zoom-out {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  will-change: opacity, transform;
+  animation: zoom-out 1.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.zoom-in {
+  animation: zoom-in 1.6s cubic-bezier(0.22, 0.61, 0.36, 1) 0.4s backwards; /* backwards: holds the start state during the delay, no lingering transform */
+}
+
+@keyframes zoom-out {
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); }
+}
+
+@keyframes zoom-in {
+  from { opacity: 0; transform: scale(1.06); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Lock page scrolling (used during screen transitions) */
+html.no-scroll,
+html.no-scroll body {
+  overflow: hidden;
+  height: 100%;
+}
+
+/* Hide the scrollbar everywhere; scrolling itself still works */
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}

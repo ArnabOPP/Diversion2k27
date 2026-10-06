@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@500;600&display=swap');
+
+.menu {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  visibility: hidden;
+  transition: visibility 0s linear 0.7s;
+}
+
+.menu--open {
+  visibility: visible;
+  transition-delay: 0s;
+}
+
+/* Full-page purple backdrop fades in behind everything, so there is no hard edge while the panel slides */
+.menu__backdrop {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 35% 50%, #6a4560 0%, #4a3358 40%, #1d1b38 100%);
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+
+.menu--open .menu__backdrop {
+  opacity: 1;
+}
+
+/* Left side: clickable stage holding our logo */
+.menu__stage {
+  position: relative;
+  flex: 0 0 60%;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+
+.menu--open .menu__stage {
+  opacity: 1;
+}
+
+.menu__logo {
+  width: min(30vw, 420px);
+  height: auto;
+  filter: drop-shadow(0 0 24px rgb(0 0 0 / 0.35));
+}
+
+.menu__foot {
+  position: absolute;
+  left: 5%;
+  bottom: 6%;
+  color: #fff;
+  font: 600 clamp(0.8rem, 1.1vw, 1rem) / 1.3 'Poppins', system-ui, sans-serif;
+}
+
+.menu__foot p {
+  margin: 0;
+}
+
+/* Right side: nav panel slides in */
+.menu__panel {
+  position: relative;
+  flex: 1;
+  padding: 0 clamp(2rem, 5vw, 4.5rem);
+  background: linear-gradient(189deg, #1e1e37 0%, #151528 50%, #0c0d1c 100%);
+  transform: translateX(100%);
+  transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.menu--open .menu__panel {
+  transform: none;
+}
+
+.menu__head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 9rem;
+  color: #d8ccff;
+  font: 600 clamp(0.9rem, 1.2vw, 1.1rem) 'Poppins', system-ui, sans-serif;
+}
+
+.menu__head img {
+  height: 2.2rem;
+  width: auto;
+}
+
+.menu__sep {
+  width: 1px;
+  height: 1.2rem;
+  background: rgb(216 204 255 / 0.4);
+}
+
+.menu__close {
+  position: absolute;
+  top: 2.2rem;
+  right: clamp(1.5rem, 3vw, 3rem);
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #3a3a6e;
+  color: #d8ccff;
+  cursor: pointer;
+}
+
+.menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.menu__list a {
+  display: block;
+  font: 400 clamp(2.1rem, 4.2vw, 3.5rem) / 1.25 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: 0.01em;
+  color: #c9b8ff;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.menu__list a:hover,
+.menu__list a.is-active {
+  color: #fff3b0;
+}
+
+@media (max-width: 800px) {
+  .menu__stage {
+    display: none;
+  }
+}
