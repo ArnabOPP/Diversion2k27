@@ -10,7 +10,12 @@ const PARALLAX = { talk: 0.06, hack: 0.1, team: 0.18 }
 type PhotoName = keyof typeof PARALLAX
 type OpenPhoto = { src: string; alt: string }
 
-export default function About() {
+interface AboutProps {
+  id?: string
+  last?: boolean // the last section: no empty space after it, and it slides over the video before it
+}
+
+export default function About({ id = 'about', last = false }: AboutProps) {
   const ref = useRef<HTMLElement>(null)
   const [lightbox, setLightbox] = useState<OpenPhoto | null>(null)
 
@@ -37,7 +42,7 @@ export default function About() {
   }, [])
 
   return (
-    <section ref={ref} id="about" className="about">
+    <section ref={ref} id={id} className={`about${last ? ' about--last' : ''}`}>
       <div className="about__inner">
         <div className="about__copy">
           <h2 className="about__title">ABOUT DIVERSION</h2>

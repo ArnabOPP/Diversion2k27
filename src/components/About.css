@@ -9,6 +9,13 @@
   font-family: 'DM Sans', system-ui, sans-serif;
 }
 
+/* Second copy, after the scrub video: slides up over the pinned video (above it) and has normal bottom space */
+.about--last {
+  z-index: 4;
+  margin-top: -80vh; /* overlaps a bit less of the video than the first About did (-100vh); more negative = comes up earlier */
+  padding-bottom: clamp(3rem, 8vh, 6rem);
+}
+
 /* One continuous gradient, faded in from transparent with a mask: the title sits over the video at first
    and the dark colour comes in over the first viewport. (Two stacked gradients left a visible seam.) */
 .about::before {

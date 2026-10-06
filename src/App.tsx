@@ -54,6 +54,7 @@ export default function App() {
         </ScrollVideo>
         <About />
         <ScrubVideo src="/video%203%20scrub.mp4" />
+        <About id="about-2" last />
         <Header />
       </div>
       {isStart ? (
