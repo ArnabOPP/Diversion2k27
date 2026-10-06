@@ -50,15 +50,27 @@
   color: #f1f1f5;
 }
 
-.about__img {
-  display: block;
+.about__photo {
+  position: relative;
+  cursor: pointer;
   will-change: transform;
+  outline: 10px solid transparent;
+  outline-offset: -4px; /* 4px inside the photo edge, 6px outside; outlines never shift the layout */
+  transition: outline-color 0.3s ease;
+}
+
+.about__photo:hover {
+  outline-color: #e8b98f; /* skin tone */
+}
+
+.about__photo img {
+  display: block;
+  width: 100%;
   height: auto;
   object-fit: cover;
 }
 
-.about__img--talk {
-  width: 100%;
+.about__photo--talk {
   margin-top: 7rem;
 }
 
@@ -66,12 +78,8 @@
   padding-top: 4rem;
 }
 
-.about__img--hack {
-  width: 100%;
-}
-
 /* Group photo sits slightly left of the column, below the large photo */
-.about__img--team {
+.about__photo--team {
   width: 72%;
   margin: 3rem 0 0 -5%;
 }
@@ -81,8 +89,69 @@
     grid-template-columns: 1fr;
   }
 
-  .about__img--team {
+  .about__photo--team {
     width: 80%;
     margin-left: 0;
   }
+}
+
+/* Round "open" button on each photo */
+.about__open {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #3a3a6e;
+  color: #d8ccff;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.about__open:hover {
+  background: #4d4d94;
+  transform: scale(1.08);
+}
+
+/* Full-screen photo viewer */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  background: #000;
+  animation: lightbox-in 0.3s ease;
+}
+
+.lightbox__img {
+  max-width: min(100vw, 1500px);
+  max-height: 100vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 2rem;
+  right: clamp(1.5rem, 3vw, 3rem);
+  width: 3rem;
+  height: 3rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #3a3a6e;
+  color: #d8ccff;
+  cursor: pointer;
+}
+
+@keyframes lightbox-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
