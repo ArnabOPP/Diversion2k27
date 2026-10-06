@@ -1,0 +1,58 @@
+/* Always-visible header elements: fixed to the viewport, above every section */
+.site-header__logo,
+.site-header__mlh {
+  position: fixed;
+  z-index: 50;
+}
+
+.site-header__menu {
+  z-index: 50;
+}
+
+.site-header__logo {
+  left: 4.7%;
+  top: 6%;
+  width: 13.8%;
+  height: auto;
+}
+
+.site-header__mlh {
+  right: 11.4%;
+  top: 0;
+  width: 5.5%;
+  height: auto;
+}
+
+.site-header__menu {
+  position: fixed;
+  right: 3.6%;
+  top: 4.2%;
+  width: 3.1vw;
+  min-width: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7vw;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.site-header__menu span {
+  display: block;
+  height: 0.4vw;
+  min-height: 4px;
+  background: #fff;
+}
+
+/* Fade the header away while the menu is open so it doesn't show through the menu's fade-in */
+.site-header__logo,
+.site-header__mlh,
+.site-header__menu {
+  transition: opacity 0.3s ease;
+}
+
+.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}

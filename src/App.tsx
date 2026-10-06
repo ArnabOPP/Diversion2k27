@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import Header from '@/components/Header'
 import Hero from '@/components/Hero'
+import ScrollVideo from '@/components/ScrollVideo'
 import Start from '@/components/Start'
 
 const START_HOLD_MS = 5000
@@ -45,7 +47,10 @@ export default function App() {
   return (
     <>
       <div className={isStart ? 'hero-wait' : 'zoom-in'}>
-        <Hero />
+        <ScrollVideo>
+          <Hero />
+        </ScrollVideo>
+        <Header />
       </div>
       {isStart ? (
         <Start />

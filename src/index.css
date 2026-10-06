@@ -25,8 +25,7 @@ body {
   to { opacity: 0; }
 }
 
-/* Screen transitions (like the GTA VI site): the old screen shrinks slightly and fades out,
-   the new one fades in from slightly larger and settles to its normal size */
+/* Screen transitions (like the GTA VI site): both screens simply fade (no scaling) */
 .hero-wait {
   position: fixed;
   inset: 0;
@@ -39,7 +38,7 @@ body {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  will-change: opacity, transform;
+  will-change: opacity;
   animation: zoom-out 1.4s cubic-bezier(0.4, 0, 0.2, 1) both;
 }
 
@@ -48,20 +47,20 @@ body {
 }
 
 @keyframes zoom-out {
-  from { opacity: 1; transform: scale(1); }
-  to { opacity: 0; transform: scale(0.95); }
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @keyframes zoom-in {
-  from { opacity: 0; transform: scale(1.06); }
-  to { opacity: 1; transform: scale(1); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Lock page scrolling (used during screen transitions) */
+/* No `height: 100%` here: shrinking the document would reset the scroll position */
 html.no-scroll,
 html.no-scroll body {
   overflow: hidden;
-  height: 100%;
 }
 
 /* Hide the scrollbar everywhere; scrolling itself still works */

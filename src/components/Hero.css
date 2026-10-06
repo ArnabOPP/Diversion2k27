@@ -15,9 +15,15 @@
   font-family: 'Pricedown', 'Bowlby One', Impact, sans-serif;
 }
 
-.hero > img,
+.hero__bg,
+.hero__content > img,
 .hero__text {
   position: absolute;
+}
+
+.hero__content {
+  position: absolute;
+  inset: 0;
 }
 
 .hero__bg {
@@ -73,47 +79,8 @@
   transform: translateX(-50%);
 }
 
-.hero__logo,
-.hero__mlh,
-.hero__menu,
 .hero__scroll {
   z-index: 4;
-}
-
-.hero__logo {
-  left: 4.7%;
-  top: 6%;
-  width: 13.8%;
-  height: auto;
-}
-
-.hero__mlh {
-  right: 11.4%;
-  top: 0;
-  width: 5.5%;
-  height: auto;
-}
-
-.hero__menu {
-  position: absolute;
-  right: 3.6%;
-  top: 4.2%;
-  width: 3.1vw;
-  min-width: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.7vw;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.hero__menu span {
-  display: block;
-  height: 0.4vw;
-  min-height: 4px;
-  background: #fff;
 }
 
 .hero__scroll {
