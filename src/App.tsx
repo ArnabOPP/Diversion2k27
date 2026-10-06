@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import About from '@/components/About'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import ScrollVideo from '@/components/ScrollVideo'
@@ -50,6 +51,7 @@ export default function App() {
         <ScrollVideo>
           <Hero />
         </ScrollVideo>
+        <About />
         <Header />
       </div>
       {isStart ? (

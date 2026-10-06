@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap');
+
+.about {
+  position: relative;
+  padding: max(7.5rem, 16vh) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 8vh, 6rem); /* top clears the fixed header logo */
+  background: linear-gradient(189deg, #1e1e37 0%, #151528 50%, #0c0d1c 100%);
+  color: #fff;
+  font-family: 'DM Sans', system-ui, sans-serif;
+}
+
+.about__inner {
+  display: grid;
+  grid-template-columns: 412fr 664fr;
+  gap: clamp(2rem, 4.5vw, 3.6rem);
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.about__title {
+  margin: 0;
+  font: 400 clamp(3rem, 6vw, 4.6rem) / 1 'Bebas Neue', Impact, sans-serif;
+  color: #e8e4c8;
+}
+
+.about__tagline {
+  margin: 1.6rem 0 1rem;
+  max-width: 11em;
+  font: 700 clamp(1.5rem, 2.4vw, 1.9rem) / 1.1 'DM Sans', system-ui, sans-serif;
+  color: #f7a8c9;
+  text-shadow: 0 0 14px rgb(247 168 201 / 0.35);
+}
+
+.about__copy p {
+  margin: 0 0 1.5rem;
+  font-size: clamp(0.95rem, 1.25vw, 1.05rem);
+  line-height: 1.5;
+  color: #f1f1f5;
+}
+
+.about__img {
+  display: block;
+  height: auto;
+  object-fit: cover;
+}
+
+.about__img--talk {
+  width: 100%;
+  margin-top: 2.2rem;
+}
+
+.about__photos {
+  padding-top: 0.4rem;
+}
+
+.about__img--hack {
+  width: 100%;
+}
+
+/* Group photo sits slightly left of the column, below the large photo */
+.about__img--team {
+  width: 72%;
+  margin: 1.6rem 0 0 -5%;
+}
+
+@media (max-width: 800px) {
+  .about__inner {
+    grid-template-columns: 1fr;
+  }
+
+  .about__img--team {
+    width: 80%;
+    margin-left: 0;
+  }
+}
