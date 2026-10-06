@@ -4,7 +4,7 @@
   position: relative;
   z-index: 2;
   margin-top: -100vh; /* slides up over the pinned video like a curtain */
-  padding: max(7.5rem, 16vh) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 8vh, 6rem); /* top clears the fixed header logo */
+  padding: max(7.5rem, 16vh) clamp(1.25rem, 5vw, 4rem) 112vh; /* top clears the fixed header logo; the empty bottom: first 12vh is plain space, the last 100vh is where the next video fades in (matches its margin-top) */
   color: #fff;
   font-family: 'DM Sans', system-ui, sans-serif;
 }

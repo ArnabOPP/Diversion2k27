@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import About from '@/components/About'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
+import ScrubVideo from '@/components/ScrubVideo'
 import ScrollVideo from '@/components/ScrollVideo'
 import Start from '@/components/Start'
 
@@ -52,6 +53,7 @@ export default function App() {
           <Hero />
         </ScrollVideo>
         <About />
+        <ScrubVideo src="/video%203%20scrub.mp4" />
         <Header />
       </div>
       {isStart ? (
