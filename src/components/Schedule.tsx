@@ -10,13 +10,13 @@ type Tile = { dx: number; y: number; w: number; h: number }
 type Group = { tiles: Tile[]; width: number; gap: number }
 
 const GROUPS: Record<string, Group> = {
-  // a large tile with a small one above its right edge
-  pair: { tiles: [{ dx: 0, y: 44, w: 66, h: 52 }, { dx: 36, y: 0, w: 30, h: 30 }], width: 66, gap: 3 },
+  // a large tile with a smaller one above its right edge (cards 2, 10 and 18)
+  pair: { tiles: [{ dx: 0, y: 44, w: 66, h: 52 }, { dx: 26, y: 0, w: 40, h: 40 }], width: 66, gap: 3 },
   tall: { tiles: [{ dx: 0, y: 12, w: 43, h: 76 }], width: 43, gap: 13 },
   bleed: { tiles: [{ dx: 0, y: 0, w: 57, h: 100 }], width: 57, gap: 3 },
   square: { tiles: [{ dx: 0, y: 17, w: 66, h: 66 }], width: 66, gap: 13 },
-  narrow: { tiles: [{ dx: 0, y: 12, w: 42, h: 76 }], width: 42, gap: 13 },
-  medium: { tiles: [{ dx: 0, y: 19, w: 60, h: 60 }], width: 60, gap: 13 },
+  narrow: { tiles: [{ dx: 0, y: 6, w: 50, h: 88 }], width: 50, gap: 5 }, // cards 6 and 14 (gap after = space left of cards 7 and 15)
+  medium: { tiles: [{ dx: 0, y: 28, w: 70, h: 70 }], width: 70, gap: 5 }, // cards 7 and 15: bigger and lower (gap after = space right of them)
   wide: { tiles: [{ dx: 0, y: 0, w: 102, h: 100 }], width: 102, gap: 0 },
 }
 
