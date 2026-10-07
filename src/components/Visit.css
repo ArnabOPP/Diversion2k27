@@ -5,7 +5,7 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 12vh clamp(1.25rem, 5vw, 4rem);
+  padding: 12vh clamp(1.25rem, 5vw, 4rem) calc(12vh + 100vh); /* the extra 100vh is the empty space the next video emerges from (matches its margin-top) */
   /* Top fades from the dark colour at the bottom of the section above into the navy, so there is no hard edge */
   background:
     linear-gradient(to bottom, #0e0f1e 0, #21264d 60vh) 0 0 / 100% 60vh no-repeat,
