@@ -4,19 +4,67 @@ import './Schedule.css'
 
 const asset = (name: string) => encodeURI(`/${name}`)
 
-// Placeholder gallery: x and sizes are in vh (x measured from the start of the gallery), y is % of the screen height
-const PHOTOS = [
-  { file: 'Scroll Down (14).png', alt: 'Placeholder photo 1', x: 0, y: 0, w: 30, h: 30 },
-  { file: 'Scroll Down (12).png', alt: 'Placeholder photo 2', x: -36, y: 44, w: 66, h: 52 },
-  { file: 'Scroll Down (13).png', alt: 'Placeholder photo 3', x: 33, y: 12, w: 43, h: 76 },
-  { file: 'about 2.png', alt: 'Placeholder photo 4', x: 89, y: 0, w: 57, h: 100 },
-  { file: 'about 1.png', alt: 'Placeholder photo 5', x: 149, y: 17, w: 66, h: 66 },
-  { file: 'about 3.png', alt: 'Placeholder photo 6', x: 228, y: 12, w: 42, h: 76 },
-  { file: 'Scroll Down (15).png', alt: 'Placeholder photo 7', x: 284, y: 19, w: 60, h: 60 },
-  { file: 'hero bg.png', alt: 'Placeholder photo 8', x: 357, y: 0, w: 102, h: 100 },
+// Placeholder gallery. Layout is generated from a repeating set of "groups" (a group is one column of the gallery):
+// x/w/h are in vh, y is % of the screen height, dx is the tile's offset inside its group, gap is the space after the group.
+type Tile = { dx: number; y: number; w: number; h: number }
+type Group = { tiles: Tile[]; width: number; gap: number }
+
+const GROUPS: Record<string, Group> = {
+  // a large tile with a small one above its right edge
+  pair: { tiles: [{ dx: 0, y: 44, w: 66, h: 52 }, { dx: 36, y: 0, w: 30, h: 30 }], width: 66, gap: 3 },
+  tall: { tiles: [{ dx: 0, y: 12, w: 43, h: 76 }], width: 43, gap: 13 },
+  bleed: { tiles: [{ dx: 0, y: 0, w: 57, h: 100 }], width: 57, gap: 3 },
+  square: { tiles: [{ dx: 0, y: 17, w: 66, h: 66 }], width: 66, gap: 13 },
+  narrow: { tiles: [{ dx: 0, y: 12, w: 42, h: 76 }], width: 42, gap: 13 },
+  medium: { tiles: [{ dx: 0, y: 19, w: 60, h: 60 }], width: 60, gap: 13 },
+  wide: { tiles: [{ dx: 0, y: 0, w: 102, h: 100 }], width: 102, gap: 0 },
+}
+
+// 22 cards: pair(2) + tall + bleed + square + narrow + medium + wide = 8, twice, then pair + tall + bleed + square + wide
+const SEQUENCE = [
+  ...['pair', 'tall', 'bleed', 'square', 'narrow', 'medium', 'wide'],
+  ...['pair', 'tall', 'bleed', 'square', 'narrow', 'medium', 'wide'],
+  ...['pair', 'tall', 'bleed', 'square', 'wide'],
 ]
 
+const FILES = [
+  'Scroll Down (12).png',
+  'Scroll Down (14).png',
+  'Scroll Down (13).png',
+  'about 2.png',
+  'about 1.png',
+  'about 3.png',
+  'Scroll Down (15).png',
+  'hero bg.png',
+]
+
+const GALLERY_GAP = 13 // space (vh) between the last gap-less group and the next, and before the end
+
+const { PHOTOS, GALLERY_VH } = (() => {
+  const photos: { num: number; file: string; alt: string; x: number; y: number; w: number; h: number }[] = []
+  let x = -36 // the first card starts left of the gallery origin, so a sliver of it shows at the screen's right edge
+  SEQUENCE.forEach((name) => {
+    const group = GROUPS[name]
+    group.tiles.forEach((tile) => {
+      const num = photos.length + 1
+      photos.push({
+        num,
+        file: FILES[(num - 1) % FILES.length],
+        alt: `Placeholder photo ${num}`,
+        x: x + tile.dx,
+        y: tile.y,
+        w: tile.w,
+        h: tile.h,
+      })
+    })
+    x += group.width + (name === 'wide' ? GALLERY_GAP : group.gap)
+  })
+  // the gallery's last card should end flush with the screen's right edge
+  return { PHOTOS: photos, GALLERY_VH: x - GALLERY_GAP }
+})()
+
 const SMOOTHING = 0.12 // 0-1: how quickly the gallery catches up with the scroll position
+const SPEED = 1.5 // sideways pixels moved per pixel of vertical scroll (1 = same speed; higher = shorter scroll)
 
 export default function Schedule() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -29,6 +77,7 @@ export default function Schedule() {
     const track = trackRef.current
     if (!section || !track) return
 
+    const movers = track.querySelectorAll<HTMLElement>('.schedule__intro, .schedule__photo')
     let current: number | null = null
     let frame = 0
 
@@ -36,7 +85,10 @@ export default function Schedule() {
       const range = section.offsetHeight - window.innerHeight
       const target = Math.min(range, Math.max(0, -section.getBoundingClientRect().top))
       current = current === null ? target : current + (target - current) * SMOOTHING
-      track.style.transform = `translate3d(${-current}px, 0, 0)`
+      // Move each piece on its own instead of one very wide track: a single layer that wide can exceed the
+      // browser's maximum texture size, and everything past that point stops being drawn
+      const shift = `translate3d(${-current * SPEED}px, 0, 0)`
+      movers.forEach((el) => (el.style.transform = shift))
       frame = requestAnimationFrame(tick)
     }
 
@@ -47,7 +99,12 @@ export default function Schedule() {
   const goBack = () => document.getElementById('visit')?.scrollIntoView({ behavior: 'smooth' })
 
   return (
-    <section ref={sectionRef} id="schedule" className="schedule">
+    <section
+      ref={sectionRef}
+      id="schedule"
+      className="schedule"
+      style={{ height: `calc(100vh + (12vw + ${GALLERY_VH}vh) / ${SPEED})` }}
+    >
       <div className="schedule__stage">
         <button className="schedule__back" type="button" onClick={goBack}>
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
@@ -56,7 +113,7 @@ export default function Schedule() {
           Back
         </button>
 
-        <div ref={trackRef} className="schedule__track">
+        <div ref={trackRef} className="schedule__track" style={{ width: `calc(112vw + ${GALLERY_VH}vh)` }}>
           <div className="schedule__intro">
             <figure className="schedule__card">
               <img src={asset('Scroll Down (15).png')} alt="Placeholder postcard" />
@@ -90,6 +147,9 @@ export default function Schedule() {
                 onClick={() => setLightbox({ src: asset(p.file), alt: p.alt })}
               >
                 <img src={asset(p.file)} alt={p.alt} />
+                <span className="schedule__num" aria-hidden="true">
+                  {String(p.num).padStart(2, '0')}
+                </span>
                 <button className="schedule__open" type="button" aria-label={`Open photo: ${p.alt}`}>
                   <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
                     <path

@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kaushan+Script&family=Poppins:wght@600;700&display=swap');
 
 /* Tall section: scrolling down slides a wide track sideways while the stage stays pinned.
-   Height = 1 viewport (pinned) + travel, where travel = gallery origin (12vw) + the last photo's right edge (459vh). */
+   The height and track width are set in Schedule.tsx from the number of cards. */
 .schedule {
   position: relative;
   z-index: 4; /* slides over the video before it */
   margin-top: -80vh;
-  height: calc(559vh + 12vw);
   color: #fff;
 }
 
@@ -30,8 +29,6 @@
 .schedule__track {
   position: relative;
   height: 100%;
-  width: calc(112vw + 460vh); /* intro (100vw) + 12vw lead-in + gallery */
-  will-change: transform;
 }
 
 /* Back button, below the site logo at the top left */
@@ -60,6 +57,7 @@
 /* First screen: tilted card on the left, text on the right */
 .schedule__intro {
   position: absolute;
+  will-change: transform;
   inset: 0 auto 0 0;
   width: 100vw;
 }
@@ -141,6 +139,7 @@
 
 .schedule__photo {
   position: absolute;
+  will-change: transform;
   cursor: pointer;
   outline: 8px solid transparent;
   outline-offset: -2px;
@@ -156,6 +155,22 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.schedule__num {
+  position: absolute;
+  top: 1.1rem;
+  left: 1.1rem;
+  font: 700 clamp(1rem, 1.6vw, 1.5rem) / 1 'Poppins', system-ui, sans-serif;
+  letter-spacing: 0.04em;
+  color: #fff;
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.6);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.schedule__photo:hover .schedule__num {
+  color: #fdd7b0;
 }
 
 .schedule__open {
