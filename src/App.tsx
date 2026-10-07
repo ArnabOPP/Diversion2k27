@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import About from '@/components/About'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
+import Schedule from '@/components/Schedule'
 import ScrubVideo from '@/components/ScrubVideo'
 import Visit from '@/components/Visit'
 import ScrollVideo from '@/components/ScrollVideo'
@@ -58,7 +59,7 @@ export default function App() {
         <About id="about-2" last />
         <Visit />
         <ScrubVideo src="/video%204%20scrub.mp4" />
-        <About id="about-3" last />
+        <Schedule />
         <Header />
       </div>
       {isStart ? (

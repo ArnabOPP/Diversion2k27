@@ -124,7 +124,7 @@ interface LightboxProps extends OpenPhoto {
 }
 
 // Full-screen viewer; rendered in a portal so it sits above the fixed header and menu
-function Lightbox({ src, alt, onClose }: LightboxProps) {
+export function Lightbox({ src, alt, onClose }: LightboxProps) {
   useEffect(() => {
     document.documentElement.classList.add('no-scroll')
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()

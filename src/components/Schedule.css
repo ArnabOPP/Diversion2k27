@@ -1,0 +1,180 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Kaushan+Script&family=Poppins:wght@600;700&display=swap');
+
+/* Tall section: scrolling down slides a wide track sideways while the stage stays pinned.
+   Height = 1 viewport (pinned) + travel, where travel = gallery origin (12vw) + the last photo's right edge (459vh). */
+.schedule {
+  position: relative;
+  z-index: 4; /* slides over the video before it */
+  margin-top: -80vh;
+  height: calc(559vh + 12vw);
+  color: #fff;
+}
+
+/* Purple backdrop, transparent at the top so it fades in over the video above */
+.schedule::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 62% 35%, #6e416e 0%, #5d3560 60%, #4f2f58 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
+  mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
+}
+
+.schedule__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.schedule__track {
+  position: relative;
+  height: 100%;
+  width: calc(112vw + 460vh); /* intro (100vw) + 12vw lead-in + gallery */
+  will-change: transform;
+}
+
+/* Back button, below the site logo at the top left */
+.schedule__back {
+  position: absolute;
+  top: max(8.5rem, 17vh);
+  left: clamp(1.25rem, 3vw, 2.2rem);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 1.5em;
+  border: 0;
+  border-radius: 999px;
+  background: #fdd7b0;
+  color: #1a1020;
+  font: 700 1rem 'Poppins', system-ui, sans-serif;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.schedule__back:hover {
+  transform: scale(1.05);
+}
+
+/* First screen: tilted card on the left, text on the right */
+.schedule__intro {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100vw;
+}
+
+.schedule__card {
+  position: absolute;
+  left: 13vw;
+  top: 50%;
+  width: 44vw;
+  margin: 0;
+  padding: 0.9vw;
+  background: #fff;
+  transform: translateY(-50%) rotate(-3.5deg);
+  box-shadow: 0 1.2vw 3.5vw rgb(0 0 0 / 0.3);
+}
+
+.schedule__card img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.schedule__script {
+  position: absolute;
+  top: 12%;
+  left: 18%;
+  margin: 0;
+  transform: rotate(-9deg);
+  font: 400 clamp(2rem, 5.6vw, 5.2rem) / 1 'Kaushan Script', cursive;
+  color: #fff;
+  -webkit-text-stroke: 0.1em #2a64a8;
+  paint-order: stroke fill;
+  text-shadow: 0.04em 0.05em 0 #2a64a8;
+}
+
+.schedule__brand {
+  position: absolute;
+  left: 4%;
+  bottom: 6%;
+  display: flex;
+  flex-direction: column;
+  font: 700 clamp(0.9rem, 2.2vw, 1.8rem) / 0.95 'Poppins', system-ui, sans-serif;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 0.4);
+}
+
+.schedule__text {
+  position: absolute;
+  left: 64vw;
+  top: 50%;
+  width: 31vw;
+  transform: translateY(-50%);
+}
+
+.schedule__text h2 {
+  margin: 0;
+  font: 400 clamp(3rem, 6.2vw, 6.2rem) / 0.95 'Bebas Neue', Impact, sans-serif;
+  color: #fdd7b0;
+}
+
+.schedule__text h3 {
+  margin: 1.4em 0 1em;
+  font: 400 clamp(1.1rem, 1.7vw, 1.8rem) / 1.15 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: 0.01em;
+  color: #fdd7b0;
+}
+
+.schedule__text p {
+  margin: 0;
+  font: 600 clamp(0.9rem, 1.35vw, 1.3rem) / 1.3 'Poppins', system-ui, sans-serif;
+}
+
+/* Gallery starts 12vw after the intro screen */
+.schedule__gallery {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 112vw;
+}
+
+.schedule__photo {
+  position: absolute;
+  cursor: pointer;
+  outline: 8px solid transparent;
+  outline-offset: -2px;
+  transition: outline-color 0.3s ease;
+}
+
+.schedule__photo:hover {
+  outline-color: #fdd7b0;
+}
+
+.schedule__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.schedule__open {
+  position: absolute;
+  right: 1.1rem;
+  bottom: 1.1rem;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #4b2a5d;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.schedule__photo:hover .schedule__open {
+  background: #fdd7b0;
+  color: #2a1633;
+}
