@@ -13,6 +13,16 @@
   overflow: hidden; /* the tilted card never adds a horizontal scroll */
 }
 
+/* Copy placed after the purple schedule section: blends in from purple, and no video follows it */
+.visit--last {
+  padding-top: 20vh; /* extra space after the schedule section */
+  padding-bottom: 12vh;
+  /* long, soft fade from the schedule's purple into the navy */
+  background:
+    linear-gradient(to bottom, #54315b 0, #3b2b5c 35vh, #21264d 100vh) 0 0 / 100% 100vh no-repeat,
+    #21264d;
+}
+
 /* Header above the card: logo lock-up on the left, short blurb on the right */
 .visit__content {
   width: min(86vw, 900px);
@@ -49,10 +59,15 @@
 
 .visit__logo img {
   position: absolute;
-  top: -0.3em; /* 0 = level with the top of VISIT; more negative = higher */
+  top: -0.3em; /* 0 = level with the top of the first line; more negative = higher */
   right: 0.4em; /* 0 = at the right edge; larger = further left */
   height: 2em;
   width: auto;
+}
+
+/* The hacker's guide header has a long first line, so its mark sits higher */
+.visit--last .visit__logo img {
+  top: -1.3em;
 }
 
 .visit__blurb {
@@ -106,25 +121,27 @@
   bottom: clamp(18px, 3.5vw, 36px);
   display: flex;
   flex-direction: column;
+  padding-right: 1.5em; /* room for the mark */
   color: #fff;
   font: 700 clamp(1.2rem, 3.2vw, 2.4rem) / 0.95 'Poppins', system-ui, sans-serif;
   letter-spacing: 0.01em;
   text-shadow: 0 2px 10px rgb(0 0 0 / 0.35);
 }
 
-.visit__brand-name {
-  position: relative;
-}
-
-/* Taken out of the text flow so enlarging the mark never moves or resizes the words */
-.visit__brand-name img {
+/* City of Joy card: the mark sits up-right of the end of the second line, as before */
+.visit__brand img {
   position: absolute;
-  left: 100%;
-  top: 50%;
-  margin-left: -0.7em; /* horizontal gap to the text; smaller or negative = further left */
+  bottom: 0.235em;
+  right: 0.36em;
   height: 2em;
   width: auto;
-  transform: translateY(-88%); /* -50% = centred on the text; more negative = higher */
+}
+
+/* Hacker's guide card: the mark sits above the first line at the right end, like its header */
+.visit--last .visit__brand img {
+  bottom: auto;
+  top: -1.3em;
+  right: 0.4em;
 }
 
 .visit__button {

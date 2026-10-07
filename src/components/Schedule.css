@@ -14,7 +14,11 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 62% 35%, #6e416e 0%, #5d3560 60%, #4f2f58 100%);
+  /* A fixed-size glow near the top on a flat base: the colour at the very bottom is then exactly #54315b everywhere,
+     which the section after it starts from, so the two blend without a seam */
+  background:
+    radial-gradient(ellipse 85vw 95vh at 62% 40vh, #6e416e 0%, #5d3560 55%, #54315b 100%),
+    #54315b;
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
   mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
 }
