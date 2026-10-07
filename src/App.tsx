@@ -3,6 +3,7 @@ import About from '@/components/About'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import ScrubVideo from '@/components/ScrubVideo'
+import Visit from '@/components/Visit'
 import ScrollVideo from '@/components/ScrollVideo'
 import Start from '@/components/Start'
 
@@ -55,6 +56,7 @@ export default function App() {
         <About />
         <ScrubVideo src="/video%203%20scrub.mp4" />
         <About id="about-2" last />
+        <Visit />
         <Header />
       </div>
       {isStart ? (

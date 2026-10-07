@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Poppins:wght@600;700&display=swap');
+
+.visit {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 12vh clamp(1.25rem, 5vw, 4rem);
+  /* Top fades from the dark colour at the bottom of the section above into the navy, so there is no hard edge */
+  background:
+    linear-gradient(to bottom, #0e0f1e 0, #21264d 60vh) 0 0 / 100% 60vh no-repeat,
+    #21264d;
+  overflow: hidden; /* the tilted card never adds a horizontal scroll */
+}
+
+/* Tilted polaroid-style card */
+.visit__card {
+  position: relative;
+  margin: 0;
+  width: min(86vw, 900px);
+  padding: clamp(10px, 1.6vw, 18px);
+  background: #fff;
+  transform: rotate(-3deg);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 0.35);
+  transition: transform 0.5s ease;
+}
+
+.visit__card:hover {
+  transform: rotate(-1.5deg);
+}
+
+.visit__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.visit__title {
+  position: absolute;
+  top: 9%;
+  left: 50%;
+  margin: 0;
+  transform: translateX(-50%) rotate(-8deg);
+  white-space: nowrap;
+  font: 400 clamp(2.4rem, 7vw, 5.6rem) / 1 'Kaushan Script', cursive;
+  color: #fff;
+  -webkit-text-stroke: 0.1em #2a64a8;
+  paint-order: stroke fill;
+  text-shadow: 0.04em 0.05em 0 #2a64a8;
+}
+
+.visit__brand {
+  position: absolute;
+  left: clamp(18px, 3.5vw, 36px);
+  bottom: clamp(18px, 3.5vw, 36px);
+  display: flex;
+  flex-direction: column;
+  color: #fff;
+  font: 700 clamp(1.2rem, 3.2vw, 2.4rem) / 0.95 'Poppins', system-ui, sans-serif;
+  letter-spacing: 0.01em;
+  text-shadow: 0 2px 10px rgb(0 0 0 / 0.35);
+}
+
+.visit__brand-name {
+  position: relative;
+}
+
+/* Taken out of the text flow so enlarging the mark never moves or resizes the words */
+.visit__brand-name img {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  margin-left: -0.7em; /* horizontal gap to the text; smaller or negative = further left */
+  height: 2em;
+  width: auto;
+  transform: translateY(-88%); /* -50% = centred on the text; more negative = higher */
+}
+
+.visit__button {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(14px, 3vw, 30px);
+  transform: translateX(-50%);
+  padding: 0.85em 1.6em;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  font: 700 clamp(0.7rem, 1.2vw, 0.95rem) 'Poppins', system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.visit__button:hover {
+  background: #ffe9d6;
+  transform: translateX(-50%) scale(1.04);
+}
