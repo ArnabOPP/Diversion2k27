@@ -1,6 +1,5 @@
 /* Always-visible header elements: fixed to the viewport, above every section */
-.site-header__logo,
-.site-header__mlh {
+.site-header__logo {
   position: fixed;
   z-index: 50;
 }
@@ -13,13 +12,6 @@
   left: 4.7%;
   top: 6%;
   width: 13.8%;
-  height: auto;
-}
-
-.site-header__mlh {
-  right: 11.4%;
-  top: 0;
-  width: 5.5%;
   height: auto;
 }
 
@@ -47,7 +39,6 @@
 
 /* Fade the header away while the menu is open so it doesn't show through the menu's fade-in */
 .site-header__logo,
-.site-header__mlh,
 .site-header__menu {
   transition: opacity 0.3s ease;
 }
