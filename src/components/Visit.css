@@ -28,6 +28,23 @@
   padding-bottom: calc(12vh + 100vh);
 }
 
+/* Team card: its first line ("MEET THE") is the long one, so the mark gets its own space to the right of the words
+   instead of sitting on top of them */
+.visit--team .visit__brand {
+  padding-right: 2.5em;
+}
+
+.visit--team .visit__brand img {
+  top: -1.15em;
+  bottom: auto;
+  right: 1.4em; /* larger = further left; it overlaps the end of the first line from about 0.8em */
+}
+
+/* The last section of the page: no room left for a video below */
+.visit--end {
+  padding-bottom: 12vh;
+}
+
 /* Header above the card: logo lock-up on the left, short blurb on the right */
 .visit__content {
   width: min(86vw, 900px);
