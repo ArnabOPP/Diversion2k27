@@ -12,7 +12,7 @@ const COPY = {
     title: 'ABOUT DIVERSION',
     tagline: 'Where ideas turn into something real.',
     paragraphs: [
-      'Diversion is IEM�s annual flagship hackathon � a space where builders, designers and problem-solvers come together to create, learn and compete. Across every edition, students spend intense hours turning bold ideas into working projects.',
+      "Diversion is IEM's annual flagship hackathon, a space where builders, designers and problem-solvers come together to create, learn and compete. Across every edition, students spend intense hours turning bold ideas into working projects.",
       'Organised by the IEM-ACM Student Chapter, Diversion brings together technology, collaboration and mentorship across fields like AI, web development, app development, IoT, cloud and more.',
     ],
     photos: {
@@ -34,6 +34,48 @@ const COPY = {
       team: { file: 'Scroll Down (14).png', alt: 'The basketball court on the IEM campus' },
     },
   },
+  hall: {
+    title: 'HALL OF FAME',
+    tagline: 'Proud moments\nfrom past editions.', // the \n line break is kept (white-space: pre)
+    paragraphs: [],
+    items: [
+      {
+        stat: '500+',
+        heading: '500+ In-house hackers',
+        text: '500+ in-house hackers showed up ready to make magic happen. With their top-notch skills and boundless creativity, they turned every challenge into an opportunity and every idea into a masterpiece.',
+      },
+      {
+        stat: '1st',
+        heading: "India's First AI-powered Hackathon",
+        text: "We made history with India's first-ever AI-powered hackathon! Cutting-edge technology met inventive minds, sparking breakthroughs and excitement that set the stage for the future of tech.",
+      },
+      {
+        stat: '1st',
+        heading: "West Bengal's First MLH Hackathon",
+        text: 'We also achieved a major milestone by hosting the first-ever in-person MLH hackathon in West Bengal. The live coding sessions and electric atmosphere made it an unforgettable experience.',
+      },
+      {
+        stat: '100%',
+        heading: 'A timeless emotional treasure',
+        text: "Every moment of our event was brimming with creativity, teamwork, and pure fun. From thrilling coding sprints to buzzing interactions, we're still riding the wave of excitement and can't wait for more!",
+      },
+      {
+        stat: '21',
+        heading: 'Nation-wide expansion',
+        text: 'Our event spanned 21 cities and over 30+ communities, bringing together a dazzling mix of talent and innovation. The collaboration was off the charts, creating a truly dynamic experience.',
+      },
+      {
+        stat: '7000+',
+        heading: 'Whopping 7000+ registrations',
+        text: 'We blew everyone away with over 7,000+ registrations! The hype was real, and the energy in the air was absolutely electric. Our event set a new standard for excitement!',
+      },
+    ],
+    photos: {
+      talk: { file: 'about 2.png', alt: 'Participants presenting their project' },
+      hack: { file: 'about 3.png', alt: 'Participants hacking at their laptops' },
+      team: { file: 'about 1.png', alt: 'A winning team celebrating with their trophy' },
+    },
+  },
 }
 
 type PhotoName = keyof typeof PARALLAX
@@ -42,11 +84,13 @@ type OpenPhoto = { src: string; alt: string }
 interface AboutProps {
   id?: string
   last?: boolean // the last section: no empty space after it, and it slides over the video before it
+  content?: keyof typeof COPY // which text and photos to show (defaults to the venue for "last" sections)
 }
 
-export default function About({ id = 'about', last = false }: AboutProps) {
+export default function About({ id = 'about', last = false, content }: AboutProps) {
   const ref = useRef<HTMLElement>(null)
-  const copy = last ? COPY.venue : COPY.about
+  const copy: (typeof COPY)[keyof typeof COPY] & { items?: { stat: string; heading: string; text: string }[] } =
+    COPY[content ?? (last ? 'venue' : 'about')]
   const [lightbox, setLightbox] = useState<OpenPhoto | null>(null)
 
   useEffect(() => {
@@ -71,23 +115,49 @@ export default function About({ id = 'about', last = false }: AboutProps) {
     return () => cancelAnimationFrame(frame)
   }, [])
 
+  const hall = Boolean(copy.items)
+
   return (
-    <section ref={ref} id={id} className={`about${last ? ' about--last' : ''}`}>
-      <div className="about__inner">
-        <div className="about__copy">
+    <section ref={ref} id={id} className={`about${last ? ' about--last' : ''}${hall ? ' about--hall' : ''}`}>
+      {hall && copy.items ? (
+        // Hall of fame: centred heading, a row of photos, then a grid of stat cards
+        <div className="about__hall">
           <h2 className="about__title">{copy.title}</h2>
           <h3 className="about__tagline">{copy.tagline}</h3>
-          {copy.paragraphs.map((text) => (
-            <p key={text}>{text}</p>
-          ))}
-          <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
-        </div>
 
-        <div className="about__photos">
-          <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
-          <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
+          <div className="about__hall-photos">
+            <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
+            <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
+            <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
+          </div>
+
+          <ul className="about__stats">
+            {copy.items.map((item) => (
+              <li key={item.heading}>
+                <span className="about__stat">{item.stat}</span>
+                <h4>{item.heading}</h4>
+                <p>{item.text}</p>
+              </li>
+            ))}
+          </ul>
         </div>
-      </div>
+      ) : (
+        <div className="about__inner">
+          <div className="about__copy">
+            <h2 className="about__title">{copy.title}</h2>
+            <h3 className="about__tagline">{copy.tagline}</h3>
+            {copy.paragraphs.map((text) => (
+              <p key={text}>{text}</p>
+            ))}
+            <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
+          </div>
+
+          <div className="about__photos">
+            <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
+            <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
+          </div>
+        </div>
+      )}
 
       {lightbox && <Lightbox {...lightbox} onClose={() => setLightbox(null)} />}
     </section>

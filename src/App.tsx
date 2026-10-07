@@ -60,7 +60,9 @@ export default function App() {
         <Visit />
         <ScrubVideo src="/video%204%20scrub.mp4" />
         <Schedule />
-        <Visit id="visit-2" after="schedule" />
+        <Visit id="visit-2" after="schedule" videoNext />
+        <ScrubVideo src="/video%207%20scrub.mp4" />
+        <About id="about-3" last content="hall" />
         <Header />
       </div>
       {isStart ? (

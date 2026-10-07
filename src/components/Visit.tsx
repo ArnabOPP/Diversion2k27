@@ -28,14 +28,15 @@ const COPY = {
 
 interface VisitProps {
   id?: string
-  after?: 'about' | 'schedule' // what comes before it: sets its copy, how its top blends in, and whether it leaves room for a video below
+  after?: 'about' | 'schedule' // what comes before it: sets its copy and how its top blends in
+  videoNext?: boolean // a scrub video follows: leave empty space below for it to emerge from
 }
 
-export default function Visit({ id = 'visit', after = 'about' }: VisitProps) {
+export default function Visit({ id = 'visit', after = 'about', videoNext = false }: VisitProps) {
   const copy = COPY[after]
 
   return (
-    <section id={id} className={`visit${after === 'schedule' ? ' visit--last' : ''}`}>
+    <section id={id} className={`visit${after === 'schedule' ? ' visit--last' : ''}${videoNext ? ' visit--video-next' : ''}`}>
       <div className="visit__content">
         <header className="visit__header">
           <div className="visit__logo" aria-label={`${copy.logoTop} ${copy.logoMain}`}>

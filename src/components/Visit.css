@@ -23,6 +23,11 @@
     #21264d;
 }
 
+/* A scrub video follows: an extra screen of empty space below, which the video fades in over (matches its margin-top) */
+.visit--video-next {
+  padding-bottom: calc(12vh + 100vh);
+}
+
 /* Header above the card: logo lock-up on the left, short blurb on the right */
 .visit__content {
   width: min(86vw, 900px);
