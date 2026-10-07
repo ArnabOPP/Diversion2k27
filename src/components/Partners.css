@@ -1,0 +1,120 @@
+/* Partners: sponsorship tiers (1, 2, 3, 4 boxes) followed by a 4 x 4 grid of community partners */
+.partners__tiers {
+  display: grid;
+  gap: clamp(2rem, 4vw, 3rem);
+  margin-top: 3.5rem;
+  text-align: left;
+}
+
+.partners__tier {
+  --tier: #e8e4c8;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.partners__tier--title {
+  --tier: #f7a8c9;
+  width: 46%; /* the fewer the boxes, the narrower the row, so each tier's boxes shrink as the count grows */
+}
+
+.partners__tier--elite {
+  --tier: #e8e4c8;
+  width: 72%;
+}
+
+.partners__tier--gold {
+  --tier: #f3c969;
+  width: 86%;
+}
+
+.partners__tier--silver {
+  --tier: #cfd3de;
+}
+
+.partners__tier-name {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 1rem;
+  font: 400 clamp(1.5rem, 2.4vw, 2rem) / 1 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: 0.06em;
+  color: var(--tier);
+}
+
+/* a thin line after the tier name */
+.partners__tier-name::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--tier);
+  opacity: 0.35;
+}
+
+.partners__grid {
+  display: grid;
+  gap: clamp(0.8rem, 1.8vw, 1.4rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.partners__box {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  border: 1px dashed color-mix(in srgb, var(--tier, #e8e4c8) 45%, transparent);
+  border-radius: 6px;
+  background: rgb(255 255 255 / 0.04);
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+.partners__box:hover {
+  border-color: var(--tier, #e8b98f);
+  background: color-mix(in srgb, var(--tier, #e8b98f) 10%, transparent);
+}
+
+.partners__label {
+  font: 500 clamp(0.75rem, 1.1vw, 0.95rem) 'DM Sans', system-ui, sans-serif;
+  color: rgb(241 241 245 / 0.55);
+}
+
+/* Community partners: a separate block below the tiers */
+.partners__community-title {
+  margin-top: 8rem;
+}
+
+.partners__grid--community {
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 3.5rem;
+}
+
+/* Call to action under the community grid */
+.partners__apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  margin-top: 3.5rem;
+  padding: 1em 2em;
+  border: 0;
+  border-radius: 999px;
+  background: #e8b98f;
+  color: #1a1020;
+  font: 700 clamp(0.9rem, 1.2vw, 1.05rem) 'Poppins', system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.partners__apply:hover {
+  background: #f3cfae;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 800px) {
+  .partners__tier {
+    width: 100%;
+  }
+
+  .partners__grid--community {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import About from '@/components/About'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
+import Partners from '@/components/Partners'
 import Schedule from '@/components/Schedule'
 import ScrubVideo from '@/components/ScrubVideo'
 import Visit from '@/components/Visit'
@@ -64,8 +65,8 @@ export default function App() {
         <ScrubVideo src="/video%207%20scrub.mp4" />
         <About id="about-3" last content="hall" />
         <Visit id="visit-3" content="team" videoNext />
-        <ScrubVideo src="/video%207%20scrub.mp4" />
-        <About id="about-4" last content="hall" />
+        <ScrubVideo src="/video%205%20scrub.mp4" />
+        <Partners id="about-4" />
         <Header />
       </div>
       {isStart ? (

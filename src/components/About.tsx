@@ -120,26 +120,33 @@ export default function About({ id = 'about', last = false, content }: AboutProp
   return (
     <section ref={ref} id={id} className={`about${last ? ' about--last' : ''}${hall ? ' about--hall' : ''}`}>
       {hall && copy.items ? (
-        // Hall of fame: centred heading, a row of photos, then a grid of stat cards
+        // Hall of fame: a left column (photo + two cards) beside a 2 x 2 grid of cards with two photos under it
         <div className="about__hall">
           <h2 className="about__title">{copy.title}</h2>
           <h3 className="about__tagline">{copy.tagline}</h3>
 
-          <div className="about__hall-photos">
-            <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
-            <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
-            <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
-          </div>
+          <div className="about__hall-layout">
+            <div className="about__hall-left">
+              <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
+              <ul className="about__stats about__stats--col">
+                {[2, 5].map((i) => (
+                  <StatCard key={i} item={copy.items![i]} />
+                ))}
+              </ul>
+            </div>
 
-          <ul className="about__stats">
-            {copy.items.map((item) => (
-              <li key={item.heading}>
-                <span className="about__stat">{item.stat}</span>
-                <h4>{item.heading}</h4>
-                <p>{item.text}</p>
-              </li>
-            ))}
-          </ul>
+            <div className="about__hall-right">
+              <ul className="about__stats about__stats--grid">
+                {[0, 1, 3, 4].map((i) => (
+                  <StatCard key={i} item={copy.items![i]} />
+                ))}
+              </ul>
+              <div className="about__hall-photos">
+                <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
+                <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
+              </div>
+            </div>
+          </div>
         </div>
       ) : (
         <div className="about__inner">
@@ -161,6 +168,16 @@ export default function About({ id = 'about', last = false, content }: AboutProp
 
       {lightbox && <Lightbox {...lightbox} onClose={() => setLightbox(null)} />}
     </section>
+  )
+}
+
+function StatCard({ item }: { item: { stat: string; heading: string; text: string } }) {
+  return (
+    <li>
+      <span className="about__stat">{item.stat}</span>
+      <h4>{item.heading}</h4>
+      <p>{item.text}</p>
+    </li>
   )
 }
 

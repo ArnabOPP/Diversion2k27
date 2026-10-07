@@ -81,15 +81,56 @@
   margin-inline: auto;
 }
 
-.about__hall-photos {
-  display: grid;
-  grid-template-columns: 1.25fr 1fr 0.85fr;
-  gap: clamp(1rem, 2.5vw, 2rem);
-  align-items: start;
-  margin: 3.5rem 0 7rem;
+/* The Hall of Fame uses more of the screen than the other sections: a wider container, narrower side padding
+   and slightly larger type in the cards */
+.about--hall:not(.partners) {
+  padding-inline: clamp(1rem, 2.5vw, 2.5rem);
 }
 
-/* Same photo rules as the other sections, reset for the row, with the middle one dropped for a staggered look */
+.about--hall:not(.partners) .about__hall {
+  max-width: 1500px;
+}
+
+.about--hall:not(.partners) .about__stats li {
+  padding: 2.2rem 2rem 2.4rem;
+}
+
+.about--hall:not(.partners) .about__stat {
+  font-size: clamp(3.4rem, 5.6vw, 5.4rem);
+}
+
+.about--hall:not(.partners) .about__stats h4 {
+  font-size: clamp(1.15rem, 1.7vw, 1.5rem);
+}
+
+.about--hall:not(.partners) .about__stats p {
+  font-size: clamp(0.95rem, 1.25vw, 1.1rem);
+}
+
+/* Left column: a photo, then two cards nudged sideways; right column: a 2 x 2 grid of cards, then two photos */
+.about__hall-layout {
+  display: grid;
+  grid-template-columns: 0.52fr 1fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+  margin-top: 4rem;
+  text-align: left;
+}
+
+.about__hall-left {
+  display: grid;
+  gap: 2.4rem;
+}
+
+.about__hall-photos {
+  display: grid;
+  grid-template-columns: 1.17fr 1fr;
+  gap: clamp(1rem, 2.5vw, 1.8rem);
+  align-items: start;
+  margin: 3rem 0 0 8%;
+}
+
+/* Same photo rules as the other sections, reset for these layouts */
 .about--hall .about__photo {
   width: auto;
   margin: 0;
@@ -99,8 +140,9 @@
   aspect-ratio: 4 / 5;
 }
 
+/* the team photo hangs lower than the presentation photo */
 .about--hall .about__photo--team {
-  margin-top: 4rem;
+  margin-top: 3.5rem;
 }
 
 .about__stats {
@@ -111,6 +153,25 @@
   padding: 0;
   list-style: none;
   text-align: left;
+}
+
+.about__stats--grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.about__stats--col {
+  grid-template-columns: 1fr;
+  gap: 2.4rem;
+}
+
+/* the two cards under the photo are staggered */
+.about__stats--col li:nth-child(1) {
+  margin-left: 2rem;
+}
+
+.about__stats--col li:nth-child(2) {
+  margin-left: 6rem;
+  margin-right: -4rem;
 }
 
 .about__stats li {
@@ -147,13 +208,19 @@
 }
 
 @media (max-width: 800px) {
+  .about__hall-layout,
   .about__hall-photos,
-  .about__stats {
+  .about__stats--grid {
     grid-template-columns: 1fr;
   }
 
-  .about--hall .about__photo--team {
-    margin-top: 0;
+  .about__hall-photos {
+    margin-left: 0;
+  }
+
+  .about--hall .about__photo--team,
+  .about__stats--col li:nth-child(n) {
+    margin: 0;
   }
 }
 
