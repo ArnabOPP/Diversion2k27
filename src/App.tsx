@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import About from '@/components/About'
-import Header from '@/components/Header'
+
 import Hero from '@/components/Hero'
 import Partners from '@/components/Partners'
 import Schedule from '@/components/Schedule'
@@ -28,6 +28,13 @@ const startScreen = (): Screen => {
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>(startScreen)
+
+  useEffect(() => {
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual'
+    }
+    window.scrollTo(0, 0)
+  }, [])
 
   useEffect(() => {
     const step = NEXT[screen]
@@ -67,7 +74,7 @@ export default function App() {
         <Visit id="visit-3" content="team" videoNext />
         <ScrubVideo src="/video%205%20scrub.mp4" />
         <Partners id="about-4" />
-        <Header />
+
       </div>
       {isStart ? (
         <Start />

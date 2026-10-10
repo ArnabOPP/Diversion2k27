@@ -37,7 +37,7 @@ export default function Menu({ open, onClose }: Props) {
 
       <nav className="menu__panel" aria-label="Main menu">
         <div className="menu__head">
-          <img src="/diversion%20logo.png" alt="" />
+          <img src="/logo.png" alt="" />
           <span className="menu__sep" />
           <span className="menu__title">DIVERSiON 2K27</span>
         </div>

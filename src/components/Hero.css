@@ -24,13 +24,16 @@
 .hero__content {
   position: absolute;
   inset: 0;
+  z-index: 1;
 }
 
+/* covers both <img> and <video> hero backgrounds */
 .hero__bg {
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 0;
 }
 
 /* Text sits between the background and the characters */
@@ -78,21 +81,128 @@
   width: auto;
   transform: translateX(-50%);
 }
-
-.hero__scroll {
-  z-index: 4;
+/* Play Again button — appears in top-right when video finishes */
+.hero__replay {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.4rem;
+  background: rgba(12, 10, 24, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 1.05rem;
+  font-family: 'Pricedown', Impact, sans-serif;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  animation: replay-fade-in 0.5s ease forwards;
+  transition: background 0.2s ease, transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.hero__scroll {
+.hero__replay:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: #ff9900;
+  box-shadow: 0 0 16px rgba(255, 153, 0, 0.55);
+  transform: scale(1.04);
+}
+
+@keyframes replay-fade-in {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Action buttons below the Diversion logo — GTA Theme */
+.hero__actions {
   position: absolute;
+  top: 77%;
   left: 50%;
-  bottom: 2.5%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  color: #fff;
-  font-family: system-ui, sans-serif;
-  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  justify-content: center;
+  gap: 0.9rem;
+  width: max-content;
+  max-width: 90vw;
+  animation: hero-actions-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+.hero__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 2.6rem;
+  background: rgba(12, 10, 24, 0.82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 999px;
+  color: #fff;
+  font-family: 'Pricedown', Impact, 'Bowlby One', sans-serif;
+  font-size: 1.35rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* GTA Vice City Hot Pink / Magenta */
+.hero__btn--register {
+  border: 2px solid #ff2a85;
+  box-shadow: 0 0 18px rgba(255, 42, 133, 0.45), inset 0 0 10px rgba(255, 42, 133, 0.2), 0 8px 30px rgba(0, 0, 0, 0.75);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(255, 42, 133, 0.6);
+}
+
+.hero__btn--register:hover {
+  transform: translateY(-3px) scale(1.04);
+  background: rgba(255, 42, 133, 0.22);
+  border-color: #ff5ca0;
+  box-shadow: 0 0 28px rgba(255, 42, 133, 0.75), inset 0 0 16px rgba(255, 42, 133, 0.35), 0 12px 36px rgba(0, 0, 0, 0.8);
+}
+
+/* GTA Vice City Electric Cyan / Turquoise */
+.hero__btn--brochure {
+  border: 2px solid #00e5ff;
+  box-shadow: 0 0 18px rgba(0, 229, 255, 0.45), inset 0 0 10px rgba(0, 229, 255, 0.2), 0 8px 30px rgba(0, 0, 0, 0.75);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9), 0 0 10px rgba(0, 229, 255, 0.6);
+}
+
+.hero__btn--brochure:hover {
+  transform: translateY(-3px) scale(1.04);
+  background: rgba(0, 229, 255, 0.22);
+  border-color: #5df2ff;
+  box-shadow: 0 0 28px rgba(0, 229, 255, 0.75), inset 0 0 16px rgba(0, 229, 255, 0.35), 0 12px 36px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes hero-actions-fade-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -35%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (max-width: 680px) {
+  .hero__actions {
+    gap: 0.75rem;
+    top: 78%;
+  }
+
+  .hero__btn {
+    padding: 0.65rem 1.8rem;
+    font-size: 1.15rem;
+  }
+}
+
