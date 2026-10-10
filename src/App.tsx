@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import About from '@/components/About'
 import Coming from '@/components/Coming'
 import Faq from '@/components/Faq'
-import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import Partners from '@/components/Partners'
 import Schedule from '@/components/Schedule'
@@ -83,7 +82,6 @@ export default function App() {
         <div className="video-gap" aria-hidden="true" />
         <ScrubVideo src="/video%206%20scrub.mp4" />
         <Coming />
-        <Header />
       </div>
       {isStart ? (
         <Start />
