@@ -18,7 +18,7 @@ type SectionContent = {
   items?: { stat: string; heading: string; text: string }[]
 }
 
-const COPY: Record<'about' | 'venue' | 'hall', SectionContent> = {
+const COPY: Record<'about' | 'venue' | 'hackerGuide' | 'hall', SectionContent> = {
   about: {
     title: 'ABOUT DIVERSION',
     tagline: 'Where ideas turn into something real.',
@@ -28,17 +28,18 @@ const COPY: Record<'about' | 'venue' | 'hall', SectionContent> = {
     ],
   },
   venue: {
-    title: 'VENUE',
-    tagline: 'IEM GURUKUL CAMPUS\nCollege More', // the \n line break is kept (white-space: pre-line)
+    title: 'HACKER GUIDE',
+    tagline: 'COMING SOON',
     paragraphs: [
-      "Diversion is hosted at the IEM Gurukul Campus in Salt Lake Sector V, the Electronics Complex that is Kolkata's IT heartland. Its academic blocks, labs and open halls give every team plenty of room to create, learn, build and compete.",
-      'Part of the Institute of Engineering & Management, the campus has fast Wi-Fi, a digital library and a cafeteria, with the Ashram Campus a short walk away, keeping teams close to mentors.',
+      'The official hacker guide, rules, problem tracks, and event resources will be released soon. Stay tuned!',
     ],
-    photos: {
-      talk: { file: 'Scroll Down (13).png', alt: 'Green wall of plants on the IEM campus' },
-      hack: { file: 'Scroll Down (12).png', alt: 'The glass-fronted IEM campus building' },
-      team: { file: 'Scroll Down (14).png', alt: 'The basketball court on the IEM campus' },
-    },
+  },
+  hackerGuide: {
+    title: 'HACKER GUIDE',
+    tagline: 'COMING SOON',
+    paragraphs: [
+      'The official hacker guide, rules, problem tracks, and event resources will be released soon. Stay tuned!',
+    ],
   },
   hall: {
     title: 'HALL OF FAME',
@@ -87,13 +88,13 @@ const COPY: Record<'about' | 'venue' | 'hall', SectionContent> = {
 interface AboutProps {
   id?: string
   last?: boolean // the last section: no empty space after it, and it slides over the video before it
-  content?: keyof typeof COPY // which text and photos to show (defaults to the venue for "last" sections)
+  content?: keyof typeof COPY // which text and photos to show (defaults to hackerGuide for "last" sections)
   noPhotos?: boolean
 }
 
 export default function About({ id = 'about', last = false, content, noPhotos = false }: AboutProps) {
   const ref = useRef<HTMLElement>(null)
-  const copy = COPY[content ?? (last ? 'venue' : 'about')]
+  const copy = COPY[content ?? (last ? 'hackerGuide' : 'about')]
   const [lightbox, setLightbox] = useState<OpenPhoto | null>(null)
   const hasPhotos = !noPhotos && Boolean(copy.photos)
 
