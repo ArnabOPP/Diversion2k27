@@ -11,6 +11,8 @@ import PrizePool from '@/components/PrizePool'
 import ScrollVideo from '@/components/ScrollVideo'
 import Start from '@/components/Start'
 
+import { playGtaMusic } from '@/utils/audio'
+
 const START_HOLD_MS = 5000
 const FADE_MS = 2000
 
@@ -30,6 +32,10 @@ const startScreen = (): Screen => {
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>(startScreen)
+
+  useEffect(() => {
+    playGtaMusic()
+  }, [screen])
 
   useEffect(() => {
     if ('scrollRestoration' in history) {
