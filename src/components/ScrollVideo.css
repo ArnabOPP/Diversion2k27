@@ -43,8 +43,8 @@
 .scroll-video__layer--about {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: clamp(1.5rem, 5vw, 4rem);
+  justify-content: flex-start;
+  padding: clamp(2rem, 6vw, 6rem) clamp(2rem, 8vw, 8rem);
   opacity: 0;
   pointer-events: none;
   z-index: 5;
@@ -52,15 +52,15 @@
 }
 
 .scroll-about__card {
-  max-width: 860px;
+  max-width: 680px;
   width: 100%;
-  padding: clamp(2.2rem, 5vw, 3.8rem) clamp(2rem, 5vw, 4rem);
-  background: rgba(13, 14, 28, 0.72);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 35px rgba(247, 168, 201, 0.1);
+  padding: 0;
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
   color: #fff;
   font-family: 'DM Sans', system-ui, sans-serif;
   text-align: left;
@@ -68,25 +68,25 @@
 
 .scroll-about__title {
   margin: 0;
-  font: 400 clamp(3.2rem, 6.2vw, 4.8rem) / 1 'Bebas Neue', Impact, sans-serif;
+  font: 400 clamp(3.4rem, 6.5vw, 5.2rem) / 1 'Bebas Neue', Impact, sans-serif;
   color: #e8e4c8;
   letter-spacing: 0.04em;
-  text-shadow: 0 0 20px rgba(232, 228, 200, 0.25);
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.95), 0 0 24px rgba(232, 228, 200, 0.3);
 }
 
 .scroll-about__tagline {
   margin: 1.8rem 0 1.5rem;
-  font: 700 clamp(1.5rem, 2.5vw, 2.1rem) / 1.15 'DM Sans', system-ui, sans-serif;
+  font: 700 clamp(1.5rem, 2.4vw, 2.1rem) / 1.15 'DM Sans', system-ui, sans-serif;
   color: #f7a8c9;
-  text-shadow: 0 0 16px rgba(247, 168, 201, 0.45);
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.95), 0 0 18px rgba(247, 168, 201, 0.5);
 }
 
 .scroll-about__body p {
   margin: 0 0 1.4rem;
-  font-size: clamp(1.02rem, 1.3vw, 1.15rem);
+  font-size: clamp(1.05rem, 1.35vw, 1.2rem);
   line-height: 1.7;
   color: #f1f1f5;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 3px 12px rgba(0, 0, 0, 0.95), 0 1px 4px rgba(0, 0, 0, 1);
 }
 
 .scroll-about__body p:last-child {
