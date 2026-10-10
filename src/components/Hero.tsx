@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { playGtaMusic, stopGtaMusic, resetGtaCurtain } from '@/utils/audio'
+import { playGtaMusic, stopGtaMusic, resetGtaCurtain, setCurtainActive } from '@/utils/audio'
 import './Hero.css'
 
 const asset = (name: string) => encodeURI(`/${name}`)
@@ -34,10 +34,11 @@ export default function Hero({ active = true }: HeroProps) {
     }
   }, [])
 
-  // Trigger GTA music on mount and whenever curtain is active
+  // Manage GTA music strictly with curtain active state (never during loader)
   useEffect(() => {
-    if (active) {
-      playGtaMusic()
+    setCurtainActive(active)
+    return () => {
+      setCurtainActive(false)
     }
   }, [active])
 

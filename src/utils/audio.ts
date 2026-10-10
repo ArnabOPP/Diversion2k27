@@ -1,5 +1,6 @@
 // Singleton audio controller for GTA background music
 let gtaAudio: HTMLAudioElement | null = null
+let curtainActive = false
 let curtainOpened = false
 
 export function getGtaAudio(): HTMLAudioElement {
@@ -23,8 +24,22 @@ export function isCurtainOpened(): boolean {
   return curtainOpened
 }
 
+export function isCurtainActive(): boolean {
+  return curtainActive
+}
+
+export function setCurtainActive(active: boolean): void {
+  curtainActive = active
+  if (active && !curtainOpened) {
+    playGtaMusic()
+  } else if (!active) {
+    pauseGtaMusic()
+  }
+}
+
 export function playGtaMusic(): void {
-  if (curtainOpened || typeof window === 'undefined') return
+  // Never play audio if curtain is not active (e.g. during loader screen) or already opened
+  if (!curtainActive || curtainOpened || typeof window === 'undefined') return
   const audio = getGtaAudio()
   if (!audio) return
 
@@ -32,13 +47,14 @@ export function playGtaMusic(): void {
   const p = audio.play()
   if (p !== undefined) {
     p.catch(() => {
-      // If unmuted autoplay is blocked on initial load, play muted so the stream starts immediately
+      // If unmuted autoplay is blocked by browser, start muted so stream is active
+      if (!curtainActive || curtainOpened) return
       audio.muted = true
       audio.play().catch(() => {})
 
-      // Unmute on the very first user interaction or document focus
+      // Unmute on the very first user interaction or cursor movement on the curtain
       const unmute = () => {
-        if (!curtainOpened && audio) {
+        if (curtainActive && !curtainOpened && audio) {
           audio.muted = false
           if (audio.paused) {
             audio.play().catch(() => {})
@@ -74,26 +90,21 @@ export function playGtaMusic(): void {
   }
 }
 
-export function stopGtaMusic(): void {
-  curtainOpened = true
+export function pauseGtaMusic(): void {
   if (gtaAudio && !gtaAudio.paused) {
     gtaAudio.pause()
     gtaAudio.currentTime = 0
   }
 }
 
-export function resetGtaCurtain(): void {
-  curtainOpened = false
-  playGtaMusic()
+export function stopGtaMusic(): void {
+  curtainOpened = true
+  pauseGtaMusic()
 }
 
-// Automatically start playback as soon as the script or DOM loads
-if (typeof window !== 'undefined') {
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => playGtaMusic())
-  } else {
+export function resetGtaCurtain(): void {
+  curtainOpened = false
+  if (curtainActive) {
     playGtaMusic()
   }
-  window.addEventListener('load', () => playGtaMusic())
-  window.addEventListener('pageshow', () => playGtaMusic())
 }
