@@ -324,36 +324,6 @@
   }
 }
 
-.curtain__sound-toggle {
-  position: absolute;
-  top: 1.8rem;
-  right: 1.8rem;
-  z-index: 15;
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.65rem 1.4rem;
-  background: rgba(12, 10, 24, 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1.5px solid rgba(247, 168, 201, 0.6);
-  border-radius: 999px;
-  color: #fff;
-  font-family: 'DM Sans', system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6), 0 0 16px rgba(247, 168, 201, 0.35);
-  animation: curtain-prompt-pulse 2s infinite ease-in-out;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
-  user-select: none;
-}
 
-.curtain__sound-toggle:hover {
-  transform: scale(1.05);
-  background: rgba(24, 18, 48, 0.95);
-  border-color: #f7a8c9;
-}
 
 

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { getGtaAudio, playGtaMusic, stopGtaMusic, resetGtaCurtain } from '@/utils/audio'
+import { playGtaMusic, stopGtaMusic, resetGtaCurtain } from '@/utils/audio'
 import './Hero.css'
 
 const asset = (name: string) => encodeURI(`/${name}`)
@@ -24,7 +24,6 @@ export default function Hero({ active = true }: HeroProps) {
   const curtainBottomRef = useRef<HTMLDivElement>(null)
   const curtainPromptRef = useRef<HTMLButtonElement>(null)
   const [ended, setEnded] = useState(false)
-  const [soundPlaying, setSoundPlaying] = useState(false)
 
   // Ensure video is warmed up and buffered in memory on mount
   useEffect(() => {
@@ -32,19 +31,6 @@ export default function Hero({ active = true }: HeroProps) {
     if (video) {
       video.preload = 'auto'
       video.load()
-    }
-  }, [])
-
-  // Track whether gta.mp3 is actively playing
-  useEffect(() => {
-    const audio = getGtaAudio()
-    const update = () => setSoundPlaying(!audio.paused)
-    audio.addEventListener('play', update)
-    audio.addEventListener('pause', update)
-    update()
-    return () => {
-      audio.removeEventListener('play', update)
-      audio.removeEventListener('pause', update)
     }
   }, [])
 
@@ -242,20 +228,6 @@ export default function Hero({ active = true }: HeroProps) {
             <img className="curtain__media" src="/curtain.jpg" alt="Diversion 2K27" />
           </div>
 
-          {!soundPlaying && (
-            <button
-              className="curtain__sound-toggle"
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                playGtaMusic()
-              }}
-              aria-label="Enable sound"
-            >
-              <span>🔊</span>
-              <span>ENABLE SOUND</span>
-            </button>
-          )}
           <button
             ref={curtainPromptRef}
             className="curtain__prompt"

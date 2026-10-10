@@ -4,7 +4,14 @@ let curtainOpened = false
 
 export function getGtaAudio(): HTMLAudioElement {
   if (!gtaAudio && typeof window !== 'undefined') {
-    gtaAudio = new Audio('/gta.mp3')
+    const existing = document.getElementById('gta-audio') as HTMLAudioElement
+    if (existing) {
+      gtaAudio = existing
+    } else {
+      gtaAudio = new Audio('/gta.mp3')
+      gtaAudio.id = 'gta-audio'
+      document.body.appendChild(gtaAudio)
+    }
     gtaAudio.loop = true
     gtaAudio.volume = 0.75
     gtaAudio.preload = 'auto'
@@ -17,15 +24,52 @@ export function isCurtainOpened(): boolean {
 }
 
 export function playGtaMusic(): void {
-  if (curtainOpened) return
+  if (curtainOpened || typeof window === 'undefined') return
   const audio = getGtaAudio()
   if (!audio) return
 
+  audio.muted = false
   const p = audio.play()
   if (p !== undefined) {
     p.catch(() => {
-      // Browser blocked autoplay without user gesture; arm capture listener
-      armGestureUnlock()
+      // If unmuted autoplay is blocked on initial load, play muted so the stream starts immediately
+      audio.muted = true
+      audio.play().catch(() => {})
+
+      // Unmute on the very first user interaction or document focus
+      const unmute = () => {
+        if (!curtainOpened && audio) {
+          audio.muted = false
+          if (audio.paused) {
+            audio.play().catch(() => {})
+          }
+        }
+        removeListeners()
+      }
+
+      const events = [
+        'pointerdown',
+        'pointermove',
+        'mousemove',
+        'click',
+        'keydown',
+        'touchstart',
+        'scroll',
+        'wheel',
+        'focus',
+        'mouseenter',
+      ]
+      const removeListeners = () => {
+        events.forEach((e) => {
+          window.removeEventListener(e, unmute, true)
+          document.removeEventListener(e, unmute, true)
+        })
+      }
+
+      events.forEach((e) => {
+        window.addEventListener(e, unmute, { capture: true, passive: true })
+        document.addEventListener(e, unmute, { capture: true, passive: true })
+      })
     })
   }
 }
@@ -43,35 +87,13 @@ export function resetGtaCurtain(): void {
   playGtaMusic()
 }
 
-function armGestureUnlock(): void {
-  if (typeof window === 'undefined') return
-
-  const onGesture = () => {
-    if (!curtainOpened) {
-      const audio = getGtaAudio()
-      if (audio && audio.paused) {
-        audio.play().then(() => {
-          disarm()
-        }).catch(() => {})
-      }
-    }
-  }
-
-  const events = ['click', 'pointerdown', 'touchstart', 'keydown']
-  const disarm = () => {
-    events.forEach((e) => {
-      window.removeEventListener(e, onGesture, true)
-      document.removeEventListener(e, onGesture, true)
-    })
-  }
-
-  events.forEach((e) => {
-    window.addEventListener(e, onGesture, { capture: true, passive: true })
-    document.addEventListener(e, onGesture, { capture: true, passive: true })
-  })
-}
-
-// Arm gesture listener immediately on load so any first tap/click anywhere starts it
+// Automatically start playback as soon as the script or DOM loads
 if (typeof window !== 'undefined') {
-  armGestureUnlock()
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => playGtaMusic())
+  } else {
+    playGtaMusic()
+  }
+  window.addEventListener('load', () => playGtaMusic())
+  window.addEventListener('pageshow', () => playGtaMusic())
 }
