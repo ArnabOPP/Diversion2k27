@@ -7,7 +7,18 @@ const asset = (name: string) => encodeURI(`/${name}`)
 // Photos drift at slightly different speeds as the section scrolls past
 const PARALLAX = { talk: 0.06, hack: 0.1, team: 0.18 }
 
-const COPY = {
+type PhotoName = keyof typeof PARALLAX
+type OpenPhoto = { src: string; alt: string }
+
+type SectionContent = {
+  title: string
+  tagline: string
+  paragraphs: string[]
+  photos?: Record<PhotoName, { file: string; alt: string }>
+  items?: { stat: string; heading: string; text: string }[]
+}
+
+const COPY: Record<'about' | 'venue' | 'hall', SectionContent> = {
   about: {
     title: 'ABOUT DIVERSION',
     tagline: 'Where ideas turn into something real.',
@@ -15,11 +26,6 @@ const COPY = {
       "Diversion is IEM's annual flagship hackathon, a space where builders, designers and problem-solvers come together to create, learn and compete. Across every edition, students spend intense hours turning bold ideas into working projects.",
       'Organised by the IEM-ACM Student Chapter, Diversion brings together technology, collaboration and mentorship across fields like AI, web development, app development, IoT, cloud and more.',
     ],
-    photos: {
-      talk: { file: 'about 2.png', alt: 'Participants presenting their project' },
-      hack: { file: 'about 3.png', alt: 'Participants hacking at their laptops' },
-      team: { file: 'about 1.png', alt: 'A winning team celebrating with their trophy' },
-    },
   },
   venue: {
     title: 'VENUE',
@@ -78,25 +84,24 @@ const COPY = {
   },
 }
 
-type PhotoName = keyof typeof PARALLAX
-type OpenPhoto = { src: string; alt: string }
-
 interface AboutProps {
   id?: string
   last?: boolean // the last section: no empty space after it, and it slides over the video before it
   content?: keyof typeof COPY // which text and photos to show (defaults to the venue for "last" sections)
+  noPhotos?: boolean
 }
 
-export default function About({ id = 'about', last = false, content }: AboutProps) {
+export default function About({ id = 'about', last = false, content, noPhotos = false }: AboutProps) {
   const ref = useRef<HTMLElement>(null)
-  const copy: (typeof COPY)[keyof typeof COPY] & { items?: { stat: string; heading: string; text: string }[] } =
-    COPY[content ?? (last ? 'venue' : 'about')]
+  const copy = COPY[content ?? (last ? 'venue' : 'about')]
   const [lightbox, setLightbox] = useState<OpenPhoto | null>(null)
+  const hasPhotos = !noPhotos && Boolean(copy.photos)
 
   useEffect(() => {
     const section = ref.current
     if (!section) return
     const photos = section.querySelectorAll<HTMLElement>('.about__photo')
+    if (!photos.length) return
     let frame = 0
 
     const tick = () => {
@@ -127,7 +132,9 @@ export default function About({ id = 'about', last = false, content }: AboutProp
 
           <div className="about__hall-layout">
             <div className="about__hall-left">
-              <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
+              {hasPhotos && copy.photos && (
+                <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
+              )}
               <ul className="about__stats about__stats--col">
                 {[2, 5].map((i) => (
                   <StatCard key={i} item={copy.items![i]} />
@@ -141,28 +148,34 @@ export default function About({ id = 'about', last = false, content }: AboutProp
                   <StatCard key={i} item={copy.items![i]} />
                 ))}
               </ul>
-              <div className="about__hall-photos">
-                <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
-                <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
-              </div>
+              {hasPhotos && copy.photos && (
+                <div className="about__hall-photos">
+                  <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
+                  <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
+                </div>
+              )}
             </div>
           </div>
         </div>
       ) : (
-        <div className="about__inner">
+        <div className={`about__inner${!hasPhotos ? ' about__inner--no-photos' : ''}`}>
           <div className="about__copy">
             <h2 className="about__title">{copy.title}</h2>
             <h3 className="about__tagline">{copy.tagline}</h3>
             {copy.paragraphs.map((text) => (
               <p key={text}>{text}</p>
             ))}
-            <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
+            {hasPhotos && copy.photos && (
+              <Photo name="talk" src={asset(copy.photos.talk.file)} alt={copy.photos.talk.alt} onOpen={setLightbox} />
+            )}
           </div>
 
-          <div className="about__photos">
-            <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
-            <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
-          </div>
+          {hasPhotos && copy.photos && (
+            <div className="about__photos">
+              <Photo name="hack" src={asset(copy.photos.hack.file)} alt={copy.photos.hack.alt} onOpen={setLightbox} />
+              <Photo name="team" src={asset(copy.photos.team.file)} alt={copy.photos.team.alt} onOpen={setLightbox} />
+            </div>
+          )}
         </div>
       )}
 
