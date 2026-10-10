@@ -164,7 +164,7 @@ export default function Hero() {
           <video
             ref={videoRef}
             className="hero__bg"
-            src={asset('plane.mp4')}
+            src={asset('plane-4k.mp4')}
             playsInline
             preload="auto"
             onEnded={() => setEnded(true)}
