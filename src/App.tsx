@@ -7,6 +7,7 @@ import Partners from '@/components/Partners'
 import Schedule from '@/components/Schedule'
 import ScrubVideo from '@/components/ScrubVideo'
 import Visit from '@/components/Visit'
+import PrizePool from '@/components/PrizePool'
 import ScrollVideo from '@/components/ScrollVideo'
 import Start from '@/components/Start'
 
@@ -64,7 +65,7 @@ export default function App() {
         <ScrollVideo />
         <About id="hacker-guide" last content="hackerGuide" />
         <ScrubVideo src="/video%203%20scrub.mp4" />
-        <Visit />
+        <PrizePool id="prizes" />
         <ScrubVideo src="/video%204%20scrub.mp4" />
         <Schedule />
         <Visit id="visit-2" after="schedule" videoNext />

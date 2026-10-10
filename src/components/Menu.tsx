@@ -6,9 +6,9 @@ const ITEMS: { label: string; target: string | null }[] = [
   { label: 'Home', target: null },
   { label: 'About', target: 'about' },
   { label: 'Hacker Guide', target: 'hacker-guide' },
+  { label: 'Prizes', target: 'prizes' },
   { label: 'Schedule', target: 'schedule' },
   { label: 'Partners', target: 'about-4' },
-  { label: 'Prizes', target: 'visit-4' },
   { label: 'FAQ', target: 'faq' },
   { label: 'Contact', target: 'contact' },
 ]
