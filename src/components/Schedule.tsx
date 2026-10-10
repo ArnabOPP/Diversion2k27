@@ -66,7 +66,81 @@ const { PHOTOS, GALLERY_VH } = (() => {
 const SMOOTHING = 0.12 // 0-1: how quickly the gallery catches up with the scroll position
 const SPEED = 1.5 // sideways pixels moved per pixel of vertical scroll (1 = same speed; higher = shorter scroll)
 
-export default function Schedule() {
+// Contact variant: four cards instead of photos (details are placeholders until the real ones are known)
+const CONTACTS = [
+  { kind: 'call', title: 'Call us', detail: '+91 00000 00000', action: 'Call now' },
+  { kind: 'mail', title: 'Mail us', detail: 'team@example.com', action: 'Send a mail' },
+  { kind: 'discord', title: 'Discord', detail: 'discord.gg/your-invite', action: 'Join the server' },
+]
+const CONTACT_W = 52 // card size in vh
+const CONTACT_H = 64
+const CONTACT_GAP = 8
+const CONTACT_START = -20 // the first card starts left of the gallery origin so a sliver shows at the right edge
+const CONTACT_END_PAD = 10 // space (vh) left to the right of the last card at the end of the scroll
+const CONTACT_GALLERY_VH =
+  CONTACT_START + CONTACTS.length * CONTACT_W + (CONTACTS.length - 1) * CONTACT_GAP + CONTACT_END_PAD
+
+// Text around the gallery for each use of this section
+const COPY = {
+  schedule: {
+    script: 'Schedule',
+    title: ['THE FULL', 'SCHEDULE'],
+    subtitle: 'TWO DAYS, ONE CAMPUS, ENDLESS IDEAS.',
+    body: 'Placeholder text for the Diversion 2K27 schedule. The opening ceremony, hacking hours, mentor rounds, demos and the closing ceremony will be listed here, hour by hour, so every team knows exactly what is coming next.',
+    brand: ['VISIT', 'DIVERSION'],
+    backTo: 'visit',
+  },
+  contact: {
+    script: 'Say Hello',
+    title: ['GET IN', 'TOUCH'],
+    subtitle: 'WE WOULD LOVE TO HEAR FROM YOU.',
+    body: 'Questions, ideas or want to partner with us? Reach out through any of the channels that follow and the team will get back to you.',
+    brand: ['CONTACT', 'DIVERSION'],
+    backTo: 'faq',
+  },
+}
+
+function ContactIcon({ kind }: { kind: string }) {
+  const common = { width: 34, height: 34, viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
+  switch (kind) {
+    case 'call':
+      return (
+        <svg {...common} aria-hidden>
+          <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z" />
+        </svg>
+      )
+    case 'mail':
+      return (
+        <svg {...common} aria-hidden>
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <path d="M3 7l9 6 9-6" />
+        </svg>
+      )
+    case 'discord':
+      return (
+        <svg {...common} aria-hidden>
+          <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 21 12z" />
+          <path d="M9 11.5h.01M15 11.5h.01" />
+        </svg>
+      )
+    default:
+      return (
+        <svg {...common} aria-hidden>
+          <path d="M4 4l16 16M20 4L4 20" />
+        </svg>
+      )
+  }
+}
+
+interface ScheduleProps {
+  id?: string
+  variant?: 'schedule' | 'contact'
+}
+
+export default function Schedule({ id = 'schedule', variant = 'schedule' }: ScheduleProps) {
+  const contact = variant === 'contact'
+  const copy = COPY[variant]
+  const galleryVh = contact ? CONTACT_GALLERY_VH : GALLERY_VH
   const sectionRef = useRef<HTMLElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
@@ -77,7 +151,7 @@ export default function Schedule() {
     const track = trackRef.current
     if (!section || !track) return
 
-    const movers = track.querySelectorAll<HTMLElement>('.schedule__intro, .schedule__photo')
+    const movers = track.querySelectorAll<HTMLElement>('.schedule__intro, .schedule__photo, .schedule__contact')
     let current: number | null = null
     let frame = 0
 
@@ -96,14 +170,14 @@ export default function Schedule() {
     return () => cancelAnimationFrame(frame)
   }, [])
 
-  const goBack = () => document.getElementById('visit')?.scrollIntoView({ behavior: 'smooth' })
+  const goBack = () => document.getElementById(copy.backTo)?.scrollIntoView({ behavior: 'smooth' })
 
   return (
     <section
       ref={sectionRef}
-      id="schedule"
-      className="schedule"
-      style={{ height: `calc(100vh + (12vw + ${GALLERY_VH}vh) / ${SPEED})` }}
+      id={id}
+      className={`schedule${contact ? ' schedule--contact' : ''}`}
+      style={{ height: `calc(100vh + (12vw + ${galleryVh}vh) / ${SPEED})` }}
     >
       <div className="schedule__stage">
         <button className="schedule__back" type="button" onClick={goBack}>
@@ -113,56 +187,76 @@ export default function Schedule() {
           Back
         </button>
 
-        <div ref={trackRef} className="schedule__track" style={{ width: `calc(112vw + ${GALLERY_VH}vh)` }}>
+        <div ref={trackRef} className="schedule__track" style={{ width: `calc(112vw + ${galleryVh}vh)` }}>
           <div className="schedule__intro">
             <figure className="schedule__card">
               <img src={asset('Scroll Down (15).png')} alt="Placeholder postcard" />
-              <p className="schedule__script">Schedule</p>
+              <p className="schedule__script">{copy.script}</p>
               <div className="schedule__brand">
-                <span>VISIT</span>
-                <span>DIVERSION</span>
+                <span>{copy.brand[0]}</span>
+                <span>{copy.brand[1]}</span>
               </div>
             </figure>
 
             <div className="schedule__text">
               <h2>
-                THE FULL
+                {copy.title[0]}
                 <br />
-                SCHEDULE
+                {copy.title[1]}
               </h2>
-              <h3>TWO DAYS, ONE CAMPUS, ENDLESS IDEAS.</h3>
-              <p>
-                Placeholder text for the Diversion 2K27 schedule. The opening ceremony, hacking hours, mentor rounds, demos and
-                the closing ceremony will be listed here, hour by hour, so every team knows exactly what is coming next.
-              </p>
+              <h3>{copy.subtitle}</h3>
+              <p>{copy.body}</p>
             </div>
           </div>
 
           <div className="schedule__gallery">
-            {PHOTOS.map((p) => (
-              <div
-                key={p.file}
-                className="schedule__photo"
-                style={{ left: `${p.x}vh`, top: `${p.y}%`, width: `${p.w}vh`, height: `${p.h}vh` }}
-                onClick={() => setLightbox({ src: asset(p.file), alt: p.alt })}
-              >
-                <img src={asset(p.file)} alt={p.alt} />
-                <span className="schedule__num" aria-hidden="true">
-                  {String(p.num).padStart(2, '0')}
-                </span>
-                <button className="schedule__open" type="button" aria-label={`Open photo: ${p.alt}`}>
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-                    <path
-                      d="M10.5 2H16v5.5M7.5 16H2v-5.5M16 2l-5.5 5.5M2 16l5.5-5.5"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
-            ))}
+            {contact
+              ? CONTACTS.map((c, i) => (
+                  <div
+                    key={c.kind}
+                    className="schedule__contact"
+                    style={{
+                      left: `${CONTACT_START + i * (CONTACT_W + CONTACT_GAP)}vh`,
+                      top: '18%',
+                      width: `${CONTACT_W}vh`,
+                      height: `${CONTACT_H}vh`,
+                    }}
+                  >
+                    <span className="schedule__num" aria-hidden="true">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <div className="schedule__contact-icon">
+                      <ContactIcon kind={c.kind} />
+                    </div>
+                    <h4>{c.title}</h4>
+                    <p>{c.detail}</p>
+                    <button type="button">{c.action}</button>
+                  </div>
+                ))
+              : PHOTOS.map((p) => (
+                  <div
+                    key={p.file}
+                    className="schedule__photo"
+                    style={{ left: `${p.x}vh`, top: `${p.y}%`, width: `${p.w}vh`, height: `${p.h}vh` }}
+                    onClick={() => setLightbox({ src: asset(p.file), alt: p.alt })}
+                  >
+                    <img src={asset(p.file)} alt={p.alt} />
+                    <span className="schedule__num" aria-hidden="true">
+                      {String(p.num).padStart(2, '0')}
+                    </span>
+                    <button className="schedule__open" type="button" aria-label={`Open photo: ${p.alt}`}>
+                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+                        <path
+                          d="M10.5 2H16v5.5M7.5 16H2v-5.5M16 2l-5.5 5.5M2 16l5.5-5.5"
+                          stroke="currentColor"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                ))}
           </div>
         </div>
       </div>

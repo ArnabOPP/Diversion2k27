@@ -72,3 +72,9 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;
 }
+
+/* Empty screen of space (same purple as the end of the contact section) that the video after it emerges from */
+.video-gap {
+  height: 100vh;
+  background: #54315b;
+}

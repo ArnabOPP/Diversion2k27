@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import About from '@/components/About'
+import Coming from '@/components/Coming'
+import Faq from '@/components/Faq'
 import Header from '@/components/Header'
 import Hero from '@/components/Hero'
 import Partners from '@/components/Partners'
@@ -67,6 +69,13 @@ export default function App() {
         <Visit id="visit-3" content="team" videoNext />
         <ScrubVideo src="/video%205%20scrub.mp4" />
         <Partners id="about-4" />
+        <Visit id="visit-4" content="prizes" videoNext />
+        <ScrubVideo src="/video%206%20scrub.mp4" />
+        <Faq id="faq" />
+        <Schedule id="contact" variant="contact" />
+        <div className="video-gap" aria-hidden="true" />
+        <ScrubVideo src="/video%206%20scrub.mp4" />
+        <Coming />
         <Header />
       </div>
       {isStart ? (
