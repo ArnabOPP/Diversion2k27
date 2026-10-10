@@ -14,10 +14,12 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const gtaAudioRef = useRef<HTMLAudioElement>(null)
   const curtainLayerRef = useRef<HTMLDivElement>(null)
   const curtainTopRef = useRef<HTMLDivElement>(null)
   const curtainBottomRef = useRef<HTMLDivElement>(null)
   const curtainPromptRef = useRef<HTMLButtonElement>(null)
+  const curtainWasOpenRef = useRef<boolean>(false)
   const [ended, setEnded] = useState(false)
 
   // Ensure video is warmed up and buffered in memory on mount
@@ -26,6 +28,44 @@ export default function Hero() {
     if (video) {
       video.preload = 'auto'
       video.load()
+    }
+  }, [])
+
+  const playGtaAudio = () => {
+    const audio = gtaAudioRef.current
+    if (!audio) return
+    audio.loop = true
+    audio.volume = 0.7
+    const p = audio.play()
+    if (p !== undefined) {
+      p.catch(() => {
+        const onFirstGesture = () => {
+          if (gtaAudioRef.current && !curtainWasOpenRef.current) {
+            gtaAudioRef.current.play().catch(() => {})
+          }
+        }
+        window.addEventListener('pointerdown', onFirstGesture, { once: true })
+        window.addEventListener('keydown', onFirstGesture, { once: true })
+        window.addEventListener('click', onFirstGesture, { once: true })
+        window.addEventListener('touchstart', onFirstGesture, { once: true })
+        window.addEventListener('scroll', onFirstGesture, { once: true })
+      })
+    }
+  }
+
+  const stopGtaAudio = () => {
+    const audio = gtaAudioRef.current
+    if (audio && !audio.paused) {
+      audio.pause()
+      audio.currentTime = 0
+    }
+  }
+
+  // Play GTA background audio while curtain is shown
+  useEffect(() => {
+    playGtaAudio()
+    return () => {
+      stopGtaAudio()
     }
   }, [])
 
@@ -61,7 +101,10 @@ export default function Hero() {
   const handleEnterCity = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation()
 
-    // Immediate playback on user gesture avoids audio restriction and starts the 4K decoder pipeline instantly
+    // Stop GTA theme music immediately when curtain begins opening
+    stopGtaAudio()
+
+    // Immediate video playback on user gesture avoids audio restriction and starts the 4K decoder pipeline instantly
     playWithSound()
 
     const section = sectionRef.current
@@ -114,6 +157,8 @@ export default function Hero() {
         sticky.style.zIndex = ''
         if (!curtainWasOpen) {
           curtainWasOpen = true
+          curtainWasOpenRef.current = true
+          stopGtaAudio()
           playWithSound()
         }
       } else {
@@ -122,12 +167,14 @@ export default function Hero() {
         sticky.style.zIndex = '60'
         if (curtainProgress < 0.05 && curtainWasOpen) {
           curtainWasOpen = false
+          curtainWasOpenRef.current = false
           const video = videoRef.current
           if (video && !video.paused) {
             video.pause()
             video.currentTime = 0
             setEnded(false)
           }
+          playGtaAudio()
         }
       }
 
@@ -170,6 +217,7 @@ export default function Hero() {
 
   return (
     <section ref={sectionRef} className="hero-section">
+      <audio ref={gtaAudioRef} src={asset('gta.mp3')} loop preload="auto" />
       <div ref={stickyRef} className="hero-section__sticky">
         <div className="hero">
           <video
