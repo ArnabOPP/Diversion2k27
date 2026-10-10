@@ -116,7 +116,7 @@
 
 .menu__list a {
   display: block;
-  font: 400 clamp(2.1rem, 4.2vw, 3.5rem) / 1.25 'Bebas Neue', Impact, sans-serif;
+  font: 400 clamp(1.8rem, 3.5vw, 2.9rem) / 1.25 'Bebas Neue', Impact, sans-serif;
   letter-spacing: 0.01em;
   color: #c9b8ff;
   text-decoration: none;

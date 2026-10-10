@@ -34,6 +34,16 @@ const COPY = {
     brandMain: 'TEAM',
     button: 'Meet the Team',
   },
+  prizes: {
+    logoTop: 'WIN',
+    logoMain: 'PRIZES',
+    blurb: 'Rewards, goodies and swag for the teams that build the boldest ideas.',
+    photoAlt: 'Placeholder photo for the prizes card',
+    title: 'Win Big',
+    brandTop: 'WIN',
+    brandMain: 'PRIZES',
+    button: 'See All Prizes',
+  },
 }
 
 interface VisitProps {
