@@ -2,8 +2,17 @@
    Height = 1 viewport (pinned) + 1 (curtain) + 0.8 (hero hold) + 0.8 (cross-fade) + 4 (video scrub) + 1 (next section slides over) */
 .scroll-video {
   position: relative;
-  height: 860vh;
+  height: 980vh;
   background: #000;
+}
+
+.scroll-video__about-anchor {
+  position: absolute;
+  top: 260vh;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
 }
 
 .scroll-video__sticky {
@@ -28,6 +37,60 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* About text layer positioned directly over the car video */
+.scroll-video__layer--about {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  will-change: opacity, transform, filter;
+}
+
+.scroll-about__card {
+  max-width: 860px;
+  width: 100%;
+  padding: clamp(2.2rem, 5vw, 3.8rem) clamp(2rem, 5vw, 4rem);
+  background: rgba(13, 14, 28, 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 35px rgba(247, 168, 201, 0.1);
+  color: #fff;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  text-align: left;
+}
+
+.scroll-about__title {
+  margin: 0;
+  font: 400 clamp(3.2rem, 6.2vw, 4.8rem) / 1 'Bebas Neue', Impact, sans-serif;
+  color: #e8e4c8;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 20px rgba(232, 228, 200, 0.25);
+}
+
+.scroll-about__tagline {
+  margin: 1.8rem 0 1.5rem;
+  font: 700 clamp(1.5rem, 2.5vw, 2.1rem) / 1.15 'DM Sans', system-ui, sans-serif;
+  color: #f7a8c9;
+  text-shadow: 0 0 16px rgba(247, 168, 201, 0.45);
+}
+
+.scroll-about__body p {
+  margin: 0 0 1.4rem;
+  font-size: clamp(1.02rem, 1.3vw, 1.15rem);
+  line-height: 1.7;
+  color: #f1f1f5;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.scroll-about__body p:last-child {
+  margin-bottom: 0;
 }
 
 /* Curtain layer that parts from the horizontal center line (top slides up, bottom slides down) */

@@ -63,7 +63,6 @@ export default function App() {
         <ScrollVideo>
           <Hero />
         </ScrollVideo>
-        <About />
         <ScrubVideo src="/video%203%20scrub.mp4" />
         <About id="about-2" last />
         <Visit />

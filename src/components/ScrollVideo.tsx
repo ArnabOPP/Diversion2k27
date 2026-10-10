@@ -5,7 +5,9 @@ const SMOOTHING = 0.12 // 0-1: how quickly everything catches up with the scroll
 const CURTAIN_VH = 1.0 // scroll distance (in viewport heights) spent opening the curtain
 const HERO_HOLD_VH = 0.8 // distance hero stays on screen before cross-fading to video
 const TRANSITION_VH = 0.8 // scroll distance (in viewport heights) spent cross-fading hero <-> video
-const OVERLAP_VH = 0 // how long (in viewports) the video has finished before About starts sliding over it
+const ABOUT_HOLD_VH = 1.2 // distance about text stays readable over car video before animating out
+const ABOUT_OUT_VH = 1.0 // scroll distance spent animating the about texts out
+const OVERLAP_VH = 0 // how long (in viewports) the video has finished before next section slides over
 const VIDEO_FADE_VH = 0.6 // the video's final fade-out spans this much of the last viewport
 const SCALE = 0.05 // how much the incoming video layer scales down into place
 
@@ -22,6 +24,7 @@ export default function ScrollVideo({ children }: Props) {
   const heroRef = useRef<HTMLDivElement>(null)
   const videoLayerRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const aboutLayerRef = useRef<HTMLDivElement>(null)
   const curtainLayerRef = useRef<HTMLDivElement>(null)
   const curtainTopRef = useRef<HTMLDivElement>(null)
   const curtainBottomRef = useRef<HTMLDivElement>(null)
@@ -48,10 +51,22 @@ export default function ScrollVideo({ children }: Props) {
     const heroLayer = heroRef.current
     const videoLayer = videoLayerRef.current
     const video = videoRef.current
+    const aboutLayer = aboutLayerRef.current
     const curtainLayer = curtainLayerRef.current
     const curtainTop = curtainTopRef.current
     const curtainBottom = curtainBottomRef.current
-    if (!section || !sticky || !heroLayer || !videoLayer || !video || !curtainLayer || !curtainTop || !curtainBottom) return
+    if (
+      !section ||
+      !sticky ||
+      !heroLayer ||
+      !videoLayer ||
+      !video ||
+      !aboutLayer ||
+      !curtainLayer ||
+      !curtainTop ||
+      !curtainBottom
+    )
+      return
 
     let current: number | null = null
     let frame = 0
@@ -96,7 +111,7 @@ export default function ScrollVideo({ children }: Props) {
         sticky.style.zIndex = '60'
       }
 
-      // 2. Hero stay & cross-fade: hero stays visible, then fades out as video fades in
+      // 2. Hero stay & cross-fade: hero stays visible, then fades out as car video & about text fade in
       const heroPhaseStart = vh * (CURTAIN_VH + HERO_HOLD_VH)
       const t = ease(clamp((current - heroPhaseStart) / (vh * TRANSITION_VH)))
       const heroOut = t
@@ -105,18 +120,34 @@ export default function ScrollVideo({ children }: Props) {
       heroLayer.style.opacity = String(1 - heroOut)
       heroLayer.style.pointerEvents = (t > 0.5 || curtainProgress < 0.9) ? 'none' : 'auto'
 
-      // While the next section slides over (last viewport), the video fades away completely
+      // While the next section slides over (last viewport), the car video fades away completely
       const videoOut = ease(clamp((current - (range - vh * VIDEO_FADE_VH)) / (vh * VIDEO_FADE_VH)))
       videoLayer.style.opacity = String(videoIn * (1 - videoOut))
       videoLayer.style.transform = `scale(${1 + SCALE * (1 - videoIn)})`
 
-      // 3. After the transition, scroll scrubs the video
+      // 3. About Diversion text layer: fades in over car video, holds, then animates OUT as user scrolls
+      const aboutIn = videoIn
+      const aboutOutStart = heroPhaseStart + vh * (TRANSITION_VH + ABOUT_HOLD_VH)
+      const aboutOutProgress = clamp((current - aboutOutStart) / (vh * ABOUT_OUT_VH))
+      const aboutOutEased = ease(aboutOutProgress)
+      const aboutOpacity = aboutIn * (1 - aboutOutEased)
+
+      aboutLayer.style.opacity = String(aboutOpacity)
+      aboutLayer.style.transform = `translateY(${-aboutOutEased * 70}px) scale(${1 - aboutOutEased * 0.05})`
+      aboutLayer.style.filter = `blur(${aboutOutEased * 6}px)`
+      aboutLayer.style.pointerEvents = aboutOpacity > 0.15 ? 'auto' : 'none'
+
+      // 4. Car video scrubbing: starts ONLY AFTER the about texts animation completes!
       if (video.duration) {
-        const scrubStart = heroPhaseStart + vh * TRANSITION_VH
-        const scrubRange = range - scrubStart - vh * OVERLAP_VH
-        const progress = scrubRange > 0 ? clamp((current - scrubStart) / scrubRange) : 0
-        const time = progress * video.duration
-        if (!video.seeking && Math.abs(video.currentTime - time) > 0.005) video.currentTime = time
+        const scrubStart = aboutOutStart + vh * ABOUT_OUT_VH
+        if (current < scrubStart) {
+          if (!video.seeking && video.currentTime !== 0) video.currentTime = 0
+        } else {
+          const scrubRange = range - scrubStart - vh * OVERLAP_VH
+          const progress = scrubRange > 0 ? clamp((current - scrubStart) / scrubRange) : 0
+          const time = progress * video.duration
+          if (!video.seeking && Math.abs(video.currentTime - time) > 0.005) video.currentTime = time
+        }
       }
 
       frame = requestAnimationFrame(tick)
@@ -128,6 +159,7 @@ export default function ScrollVideo({ children }: Props) {
 
   return (
     <section ref={sectionRef} className="scroll-video">
+      <div id="about" className="scroll-video__about-anchor" />
       <div ref={stickyRef} className="scroll-video__sticky">
         <div ref={heroRef} className="scroll-video__layer">
           {children}
@@ -143,6 +175,20 @@ export default function ScrollVideo({ children }: Props) {
             disablePictureInPicture
             tabIndex={-1}
           />
+        </div>
+        <div ref={aboutLayerRef} className="scroll-video__layer scroll-video__layer--about">
+          <div className="scroll-about__card">
+            <h2 className="scroll-about__title">ABOUT DIVERSION</h2>
+            <h3 className="scroll-about__tagline">Where ideas turn into something real.</h3>
+            <div className="scroll-about__body">
+              <p>
+                Diversion is IEM's annual flagship hackathon, a space where builders, designers and problem-solvers come together to create, learn and compete. Across every edition, students spend intense hours turning bold ideas into working projects.
+              </p>
+              <p>
+                Organised by the IEM-ACM Student Chapter, Diversion brings together technology, collaboration and mentorship across fields like AI, web development, app development, IoT, cloud and more.
+              </p>
+            </div>
+          </div>
         </div>
         <div
           ref={curtainLayerRef}
