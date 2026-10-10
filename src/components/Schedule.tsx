@@ -229,8 +229,10 @@ export default function Schedule({ id = 'schedule', variant = 'schedule' }: Sche
                       <ContactIcon kind={c.kind} />
                     </div>
                     <h4>{c.title}</h4>
-                    <p>{c.detail}</p>
-                    <button type="button">{c.action}</button>
+                    <div className="schedule__contact-row">
+                      <button type="button">{c.action}</button>
+                      <p>{c.detail}</p>
+                    </div>
                   </div>
                 ))
               : PHOTOS.map((p) => (
