@@ -10,7 +10,11 @@ const CURTAIN_OPEN_THRESHOLD = 0.88 // Trigger playback as soon as curtain panel
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
 const ease = (t: number) => t * t * (3 - 2 * t)
 
-export default function Hero() {
+interface HeroProps {
+  active?: boolean
+}
+
+export default function Hero({ active = true }: HeroProps) {
   const sectionRef = useRef<HTMLElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -33,22 +37,38 @@ export default function Hero() {
 
   const playGtaAudio = () => {
     const audio = gtaAudioRef.current
-    if (!audio) return
+    if (!audio || curtainWasOpenRef.current) return
     audio.loop = true
-    audio.volume = 0.7
+    audio.volume = 0.75
+
     const p = audio.play()
     if (p !== undefined) {
       p.catch(() => {
-        const onFirstGesture = () => {
-          if (gtaAudioRef.current && !curtainWasOpenRef.current) {
-            gtaAudioRef.current.play().catch(() => {})
+        // Autoplay policy prevented playback, attach listeners for any user interaction
+        const tryPlay = () => {
+          if (curtainWasOpenRef.current) return
+          if (gtaAudioRef.current && gtaAudioRef.current.paused) {
+            gtaAudioRef.current.play().then(() => {
+              removeListeners()
+            }).catch(() => {})
           }
         }
-        window.addEventListener('pointerdown', onFirstGesture, { once: true })
-        window.addEventListener('keydown', onFirstGesture, { once: true })
-        window.addEventListener('click', onFirstGesture, { once: true })
-        window.addEventListener('touchstart', onFirstGesture, { once: true })
-        window.addEventListener('scroll', onFirstGesture, { once: true })
+
+        const events = [
+          'pointerdown',
+          'mousedown',
+          'keydown',
+          'touchstart',
+          'pointermove',
+          'mousemove',
+          'wheel',
+          'scroll',
+        ]
+        const removeListeners = () => {
+          events.forEach((evt) => window.removeEventListener(evt, tryPlay))
+        }
+
+        events.forEach((evt) => window.addEventListener(evt, tryPlay, { passive: true }))
       })
     }
   }
@@ -61,13 +81,15 @@ export default function Hero() {
     }
   }
 
-  // Play GTA background audio while curtain is shown
+  // Play GTA background audio whenever active changes or on mount
   useEffect(() => {
-    playGtaAudio()
+    if (active && !curtainWasOpenRef.current) {
+      playGtaAudio()
+    }
     return () => {
       stopGtaAudio()
     }
-  }, [])
+  }, [active])
 
   const playWithSound = () => {
     const video = videoRef.current

@@ -61,7 +61,7 @@ export default function App() {
   return (
     <>
       <div className={isStart ? 'hero-wait' : 'zoom-in'}>
-        <Hero />
+        <Hero active={screen === 'hero'} />
         <ScrollVideo />
         <About id="hacker-guide" last content="hackerGuide" />
         <ScrubVideo src="/video%203%20scrub.mp4" />
@@ -82,9 +82,11 @@ export default function App() {
         <Coming />
       </div>
       {isStart ? (
-        <Start />
+        <div onClick={() => setScreen('hero')} style={{ cursor: 'pointer' }}>
+          <Start />
+        </div>
       ) : screen === 'startOut' ? (
-        <div className="zoom-out">
+        <div className="zoom-out" onClick={() => setScreen('hero')} style={{ cursor: 'pointer' }}>
           <Start />
         </div>
       ) : null}
