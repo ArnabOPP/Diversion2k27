@@ -3,8 +3,9 @@ import './Hero.css'
 
 const asset = (name: string) => encodeURI(`/${name}`)
 
-const SMOOTHING = 0.12
+const SMOOTHING = 0.18
 const CURTAIN_VH = 1.0
+const CURTAIN_OPEN_THRESHOLD = 0.88 // Trigger playback as soon as curtain panels clear the screen
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
 const ease = (t: number) => t * t * (3 - 2 * t)
@@ -19,10 +20,22 @@ export default function Hero() {
   const curtainPromptRef = useRef<HTMLButtonElement>(null)
   const [ended, setEnded] = useState(false)
 
+  // Ensure video is warmed up and buffered in memory on mount
+  useEffect(() => {
+    const video = videoRef.current
+    if (video) {
+      video.preload = 'auto'
+      video.load()
+    }
+  }, [])
+
   const playWithSound = () => {
     const video = videoRef.current
     if (!video) return
-    video.currentTime = 0
+    // Only seek to 0 if the video has played substantially or completed; avoids seek pipeline stall
+    if (video.currentTime > 0.05 && ended) {
+      video.currentTime = 0
+    }
     setEnded(false)
     video.muted = false
 
@@ -48,18 +61,8 @@ export default function Hero() {
   const handleEnterCity = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation()
 
-    // Prime audio in response to direct user click
-    const video = videoRef.current
-    if (video) {
-      video.muted = false
-      const p = video.play()
-      if (p !== undefined) {
-        p.then(() => {
-          video.pause()
-          video.currentTime = 0
-        }).catch(() => {})
-      }
-    }
+    // Immediate playback on user gesture avoids audio restriction and starts the 4K decoder pipeline instantly
+    playWithSound()
 
     const section = sectionRef.current
     if (section) {
@@ -105,7 +108,7 @@ export default function Hero() {
         curtainPromptRef.current.style.pointerEvents = pOpacity > 0.1 ? 'auto' : 'none'
       }
 
-      if (curtainProgress >= 1) {
+      if (curtainProgress >= CURTAIN_OPEN_THRESHOLD) {
         curtainLayer.style.visibility = 'hidden'
         curtainLayer.style.pointerEvents = 'none'
         sticky.style.zIndex = ''
@@ -114,10 +117,18 @@ export default function Hero() {
           playWithSound()
         }
       } else {
-        curtainWasOpen = false
         curtainLayer.style.visibility = 'visible'
         curtainLayer.style.pointerEvents = curtainProgress < 0.2 ? 'auto' : 'none'
         sticky.style.zIndex = '60'
+        if (curtainProgress < 0.05 && curtainWasOpen) {
+          curtainWasOpen = false
+          const video = videoRef.current
+          if (video && !video.paused) {
+            video.pause()
+            video.currentTime = 0
+            setEnded(false)
+          }
+        }
       }
 
       frame = requestAnimationFrame(tick)
