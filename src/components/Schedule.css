@@ -4,23 +4,19 @@
    The height and track width are set in Schedule.tsx from the number of cards. */
 .schedule {
   position: relative;
-  z-index: 4; /* slides over the video before it */
-  margin-top: -80vh;
+  z-index: 4;
+  margin-top: 0;
   color: #fff;
 }
 
-/* Purple backdrop, transparent at the top so it fades in over the video above */
+/* Purple backdrop */
 .schedule::before {
   content: '';
   position: absolute;
   inset: 0;
-  /* A fixed-size glow near the top on a flat base: the colour at the very bottom is then exactly #54315b everywhere,
-     which the section after it starts from, so the two blend without a seam */
   background:
     radial-gradient(ellipse 85vw 95vh at 62% 40vh, #6e416e 0%, #5d3560 55%, #54315b 100%),
     #54315b;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
-  mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
 }
 
 .schedule__stage {

@@ -5,27 +5,23 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 12vh clamp(1.25rem, 5vw, 4rem) calc(12vh + 100vh); /* the extra 100vh is the empty space the next video emerges from (matches its margin-top) */
-  /* Top fades from the dark colour at the bottom of the section above into the navy, so there is no hard edge */
+  padding: clamp(4rem, 10vh, 6rem) clamp(1.25rem, 5vw, 4rem);
   background:
     linear-gradient(to bottom, #0e0f1e 0, #21264d 60vh) 0 0 / 100% 60vh no-repeat,
     #21264d;
   overflow: hidden; /* the tilted card never adds a horizontal scroll */
 }
 
-/* Copy placed after the purple schedule section: blends in from purple, and no video follows it */
+/* Copy placed after the purple schedule section */
 .visit--last {
-  padding-top: 20vh; /* extra space after the schedule section */
-  padding-bottom: 12vh;
-  /* long, soft fade from the schedule's purple into the navy */
+  padding: clamp(4rem, 10vh, 6rem) clamp(1.25rem, 5vw, 4rem);
   background:
     linear-gradient(to bottom, #54315b 0, #3b2b5c 35vh, #21264d 100vh) 0 0 / 100% 100vh no-repeat,
     #21264d;
 }
 
-/* A scrub video follows: an extra screen of empty space below, which the video fades in over (matches its margin-top) */
 .visit--video-next {
-  padding-bottom: calc(12vh + 100vh);
+  padding-bottom: clamp(4rem, 10vh, 6rem);
 }
 
 /* Team card: its first line ("MEET THE") is the long one, so the mark gets its own space to the right of the words

@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import './ScrubVideo.css'
 
 const SMOOTHING = 0.12 // 0-1: how quickly the video catches up with the scroll position
-const PLAY_START_VH = -0.4 // playback begins this far (in viewports) from when the video pins; negative = before it pins, while it is still sliding in
+const PLAY_START_VH = 0 // playback begins as soon as the video section pins
 
 const END_FADE_VH = 0.6 // the video fades out completely over this much scrolling at the very end
 

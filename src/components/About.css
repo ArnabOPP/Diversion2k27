@@ -3,17 +3,17 @@
 .about {
   position: relative;
   z-index: 2;
-  margin-top: -100vh; /* slides up over the pinned video like a curtain */
-  padding: max(7.5rem, 16vh) clamp(1.25rem, 5vw, 4rem) 112vh; /* top clears the fixed header logo; the empty bottom: first 12vh is plain space, the last 100vh is where the next video fades in (matches its margin-top) */
+  margin-top: 0;
+  padding: clamp(4rem, 10vh, 7rem) clamp(1.25rem, 5vw, 4rem);
   color: #fff;
   font-family: 'DM Sans', system-ui, sans-serif;
 }
 
-/* Second copy, after the scrub video: slides up over the pinned video (above it) and has normal bottom space */
+/* Second copy, after the scrub video */
 .about--last {
   z-index: 4;
-  margin-top: -80vh; /* overlaps a bit less of the video than the first About did (-100vh); more negative = comes up earlier */
-  padding-bottom: clamp(3rem, 8vh, 6rem);
+  margin-top: 0;
+  padding: clamp(4rem, 10vh, 7rem) clamp(1.25rem, 5vw, 4rem);
 }
 
 /* The second copy is centred (the first stays right-aligned) */
@@ -27,16 +27,12 @@
   white-space: pre; /* never wrap: each written line stays on one line */
 }
 
-/* One continuous gradient, faded in from transparent with a mask: the title sits over the video at first
-   and the dark colour comes in over the first viewport. (Two stacked gradients left a visible seam.) */
 .about::before {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
   background: linear-gradient(189deg, #1e1e37 0%, #151528 50%, #0c0d1c 100%);
-  -webkit-mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
-  mask-image: linear-gradient(to bottom, transparent 0, rgb(0 0 0 / 0.55) 45vh, #000 100vh);
 }
 
 .about__inner {

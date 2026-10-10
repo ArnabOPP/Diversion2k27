@@ -77,7 +77,6 @@ export default function App() {
         <ScrubVideo src="/video%206%20scrub.mp4" />
         <Faq id="faq" />
         <Schedule id="contact" variant="contact" />
-        <div className="video-gap" aria-hidden="true" />
         <ScrubVideo src="/video%206%20scrub.mp4" />
         <Coming />
       </div>
