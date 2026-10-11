@@ -36,8 +36,23 @@ export default function Hero({ active = true }: HeroProps) {
   const curtainBorderRef = useRef<HTMLDivElement>(null)
   const [ended, setEnded] = useState(false)
   const endedRef = useRef(false)
+  const [videoSrc, setVideoSrc] = useState(() => {
+    if (typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches) {
+      return asset('plane-mobile.mp4')
+    }
+    return asset('plane-4k.mp4')
+  })
 
-  // Ensure video is warmed up and buffered in memory on mount
+  useEffect(() => {
+    const mql = window.matchMedia('(max-width: 768px)')
+    const updateSrc = () => {
+      setVideoSrc(mql.matches ? asset('plane-mobile.mp4') : asset('plane-4k.mp4'))
+    }
+    mql.addEventListener('change', updateSrc)
+    return () => mql.removeEventListener('change', updateSrc)
+  }, [])
+
+  // Ensure video is warmed up and buffered in memory on mount or src change
   useEffect(() => {
     const video = videoRef.current
     if (video) {
@@ -45,7 +60,7 @@ export default function Hero({ active = true }: HeroProps) {
       video.muted = true
       video.load()
     }
-  }, [])
+  }, [videoSrc])
 
   // Manage GTA music strictly with curtain active state (never during loader)
   useEffect(() => {
@@ -225,8 +240,9 @@ export default function Hero({ active = true }: HeroProps) {
         <div className="hero">
           <video
             ref={videoRef}
+            key={videoSrc}
             className="hero__bg"
-            src={asset('plane-4k.mp4')}
+            src={videoSrc}
             playsInline
             preload="auto"
             muted
@@ -266,10 +282,16 @@ export default function Hero({ active = true }: HeroProps) {
           onClick={() => playGtaMusic()}
         >
           <div ref={curtainTopRef} className="curtain__panel curtain__panel--top">
-            <img className="curtain__media" src="/curtain.jpg" alt="Diversion 2K27" />
+            <picture className="curtain__picture">
+              <source media="(max-width: 768px)" srcSet="/curtain-mobile.jpg" />
+              <img className="curtain__media" src="/curtain.jpg" alt="Diversion 2K27" />
+            </picture>
           </div>
           <div ref={curtainBottomRef} className="curtain__panel curtain__panel--bottom">
-            <img className="curtain__media" src="/curtain.jpg" alt="Diversion 2K27" />
+            <picture className="curtain__picture">
+              <source media="(max-width: 768px)" srcSet="/curtain-mobile.jpg" />
+              <img className="curtain__media" src="/curtain.jpg" alt="Diversion 2K27" />
+            </picture>
           </div>
 
           {/* Light purple glow moving around the border in a rectangle */}

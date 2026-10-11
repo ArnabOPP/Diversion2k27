@@ -64,19 +64,24 @@ export default function App() {
         <Hero active={screen === 'hero'} />
         <ScrollVideo />
         <City id="city" />
-        <ScrubVideo src="/video%204%20scrub.mp4" />
-        <Schedule />
-        <Visit id="visit-2" after="schedule" videoNext />
-        <ScrubVideo src="/video%207%20scrub.mp4" />
-        <About id="about-3" last content="hall" />
-        <Visit id="visit-3" content="team" videoNext />
-        <ScrubVideo src="/video%205%20scrub.mp4" />
-        <Partners id="about-4" />
-        <Visit id="visit-4" content="prizes" videoNext />
-        <ScrubVideo src="/video%206%20scrub.mp4" />
-        <Faq id="faq" />
-        <Schedule id="contact" variant="contact" />
-        <ScrubVideo src="/video%206%20scrub.mp4" />
+        {/* Set to true to restore the hidden sections and animations */}
+        {false ? (
+          <>
+            <ScrubVideo src="/video%204%20scrub.mp4" />
+            <Schedule />
+            <Visit id="visit-2" after="schedule" videoNext />
+            <ScrubVideo src="/video%207%20scrub.mp4" />
+            <About id="about-3" last content="hall" />
+            <Visit id="visit-3" content="team" videoNext />
+            <ScrubVideo src="/video%205%20scrub.mp4" />
+            <Partners id="about-4" />
+            <Visit id="visit-4" content="prizes" videoNext />
+            <ScrubVideo src="/video%206%20scrub.mp4" />
+            <Faq id="faq" />
+            <Schedule id="contact" variant="contact" />
+            <ScrubVideo src="/video%206%20scrub.mp4" />
+          </>
+        ) : null}
         <Coming />
       </div>
       {isStart ? (

@@ -56,6 +56,18 @@
   animation: coming-drift 7s ease-in-out infinite alternate;
 }
 
+/* Subtitle below COMING SOON */
+.coming__sub {
+  margin: clamp(1rem, 2.6vh, 2.2rem) 0 0;
+  font-family: 'Poppins', 'DM Sans', system-ui, sans-serif;
+  font-size: clamp(1.2rem, 3vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: #f7a8c9;
+  text-shadow: 0 0 24px rgba(247, 168, 201, 0.5), 0 2px 8px rgba(0, 0, 0, 0.85);
+  user-select: none;
+}
+
 @keyframes coming-drift {
   from {
     background-position: 0% 50%;

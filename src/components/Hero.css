@@ -240,24 +240,24 @@
   }
 }
 
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   .hero__logos {
-    top: 23%;
-    gap: clamp(0.9rem, 3.5vw, 1.6rem);
+    top: 33.5%;
+    gap: clamp(1rem, 3.8vw, 1.8rem);
     max-width: 95vw;
   }
 
   .hero__logo {
-    height: clamp(38px, 11vw, 62px);
+    height: clamp(48px, 14vw, 76px);
   }
 
   .hero__logo--acm {
-    height: clamp(32px, 9.4vw, 54px);
+    height: clamp(40px, 12vw, 66px);
   }
 
   .hero__actions {
     gap: 0.75rem;
-    top: 78%;
+    top: 71.5%;
   }
 
   .hero__btn {
@@ -305,6 +305,14 @@
 
 .curtain__panel--bottom {
   clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+}
+
+.curtain__picture {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .curtain__media {
@@ -381,6 +389,15 @@
   }
   50% {
     transform: translate(-50%, -50%) scale(1.03);
+  }
+}
+
+@media (max-width: 768px) {
+  .curtain__prompt {
+    top: 91.5%;
+    padding: clamp(6px, 1.8vw, 9px) clamp(16px, 4.5vw, 22px);
+    font-size: clamp(13px, 3.8vw, 16px);
+    letter-spacing: 0.09em;
   }
 }
 
