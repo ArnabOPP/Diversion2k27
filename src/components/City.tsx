@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
-import { playKolkataMusic, pauseKolkataMusic, isKolkataMusicPlaying } from '@/utils/audio'
+import { useEffect, useRef } from 'react'
+import { playKolkataMusic, pauseKolkataMusic } from '@/utils/audio'
 import './City.css'
 
 const TOTAL_FRAMES = 288
@@ -29,7 +29,6 @@ export default function City({ id = 'city' }: CityProps) {
   const line1Ref = useRef<HTMLDivElement>(null)
   const line2Ref = useRef<HTMLDivElement>(null)
   const charsRef = useRef<(HTMLSpanElement | null)[]>([])
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false)
 
   const imagesRef = useRef<HTMLImageElement[]>([])
   const lastDrawnIndexRef = useRef<number>(-1)
@@ -241,10 +240,8 @@ export default function City({ id = 'city' }: CityProps) {
 
       if (shouldPlayAudio) {
         playKolkataMusic()
-        if (!isPlayingAudio) setIsPlayingAudio(true)
       } else {
         pauseKolkataMusic()
-        if (isPlayingAudio) setIsPlayingAudio(false)
       }
 
       frame = requestAnimationFrame(tick)
@@ -294,28 +291,6 @@ export default function City({ id = 'city' }: CityProps) {
             SCROLL TO EXPLORE
           </div>
         </div>
-
-        {/* Subtle Vice City Radio indicator / toggle */}
-        <button
-          type="button"
-          className={`city__audio-badge ${isPlayingAudio ? 'city__audio-badge--active' : ''}`}
-          onClick={() => {
-            if (isKolkataMusicPlaying()) {
-              pauseKolkataMusic()
-              setIsPlayingAudio(false)
-            } else {
-              playKolkataMusic()
-              setIsPlayingAudio(true)
-            }
-          }}
-          aria-label={isPlayingAudio ? 'Mute Kolkata audio' : 'Play Kolkata audio'}
-          title="KOLKATA CITY FM"
-        >
-          <span className="city__audio-icon">{isPlayingAudio ? '🔊' : '🔇'}</span>
-          <span className="city__audio-text">
-            {isPlayingAudio ? 'KOLKATA FM • PLAYING' : 'KOLKATA FM • SOUND ON'}
-          </span>
-        </button>
       </div>
     </section>
   )
