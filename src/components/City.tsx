@@ -28,6 +28,7 @@ export default function City({ id = 'city' }: CityProps) {
   const line1Ref = useRef<HTMLDivElement>(null)
   const line2Ref = useRef<HTMLDivElement>(null)
   const charsRef = useRef<(HTMLSpanElement | null)[]>([])
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const imagesRef = useRef<HTMLImageElement[]>([])
   const lastDrawnIndexRef = useRef<number>(-1)
@@ -44,6 +45,13 @@ export default function City({ id = 'city' }: CityProps) {
     const line1 = line1Ref.current
     const line2 = line2Ref.current
     if (!section || !sticky || !canvas || !blackScreen || !introLayer || !line1 || !line2) return
+
+    // Background audio for Kolkata drone scrub
+    const audio = new Audio('/kolkata.mp3')
+    audio.loop = true
+    audio.preload = 'auto'
+    audio.volume = 0.8
+    audioRef.current = audio
 
     // Preload image frames
     const images: HTMLImageElement[] = []
@@ -230,13 +238,58 @@ export default function City({ id = 'city' }: CityProps) {
         sticky.style.opacity = '1'
       }
 
+      // 6. Background audio control: plays in loop when Kolkata video scrubbing starts
+      // Stops immediately when user scrolls above (into intro or above section) or below the city section
+      const rect = section.getBoundingClientRect()
+      const isAbove = current < scrubStart || rect.top > 0
+      const isBelow = scrolled >= range || rect.bottom <= 0
+      const shouldPlayAudio = !isAbove && !isBelow
+
+      if (shouldPlayAudio) {
+        if (audio.paused) {
+          audio.play().catch(() => {
+            const resume = () => {
+              if (!audioRef.current) return
+              const r = section.getBoundingClientRect()
+              const curAbove = (current ?? 0) < scrubStart || r.top > 0
+              const curBelow = -r.top >= range || r.bottom <= 0
+              if (!curAbove && !curBelow) {
+                audioRef.current.play().catch(() => {})
+              }
+            }
+            window.addEventListener('scroll', resume, { once: true, passive: true })
+            window.addEventListener('pointerdown', resume, { once: true, passive: true })
+          })
+        }
+      } else {
+        if (!audio.paused) {
+          audio.pause()
+          audio.currentTime = 0
+        }
+      }
+
       frame = requestAnimationFrame(tick)
     }
 
     frame = requestAnimationFrame(tick)
+
+    const onVisibilityChange = () => {
+      if (document.hidden && audioRef.current && !audioRef.current.paused) {
+        audioRef.current.pause()
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
+
     return () => {
       cancelAnimationFrame(frame)
       window.removeEventListener('resize', resizeCanvas)
+      document.removeEventListener('visibilitychange', onVisibilityChange)
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current.currentTime = 0
+        audioRef.current.src = ''
+        audioRef.current = null
+      }
     }
   }, [])
 
