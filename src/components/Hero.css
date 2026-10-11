@@ -240,7 +240,28 @@
   }
 }
 
+.hero__title-logo {
+  display: none;
+}
+
 @media (max-width: 768px) {
+  .hero__title-logo {
+    display: block;
+    position: absolute;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(280px, 89vw, 540px);
+    max-width: 90vw;
+    height: auto;
+    object-fit: contain;
+    z-index: 6;
+    pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.7));
+    animation: hero-title-logo-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
   .hero__logos {
     top: 33.5%;
     gap: clamp(1rem, 3.8vw, 1.8rem);
@@ -263,6 +284,17 @@
   .hero__btn {
     padding: 0.65rem 1.8rem;
     font-size: 1.15rem;
+  }
+}
+
+@keyframes hero-title-logo-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
@@ -394,7 +426,7 @@
 
 @media (max-width: 768px) {
   .curtain__prompt {
-    top: 91.5%;
+    top: 86%;
     padding: clamp(6px, 1.8vw, 9px) clamp(16px, 4.5vw, 22px);
     font-size: clamp(13px, 3.8vw, 16px);
     letter-spacing: 0.09em;

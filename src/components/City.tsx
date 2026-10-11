@@ -120,21 +120,37 @@ export default function City({ id = 'city' }: CityProps) {
       lastDrawnWasFallbackRef.current = isFallback
     }
 
-    // Priority load first frame immediately
-    images[0].src = getFramePath(0)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    const smoothing = isMobile ? 0.20 : SMOOTHING
+
+    // Priority load first 25 frames immediately so intro & initial scrub are instant
+    for (let i = 0; i < Math.min(25, TOTAL_FRAMES); i++) {
+      images[i].src = getFramePath(i)
+    }
     if (images[0].complete && images[0].naturalWidth > 0) {
       renderCanvas(0)
     }
 
-    // Preload remaining frames
-    for (let i = 1; i < TOTAL_FRAMES; i++) {
-      images[i].src = getFramePath(i)
+    // Stream remaining frames in non-blocking batches to prevent mobile network/thread choking
+    let nextBatch = 25
+    let batchTimer: number | null = null
+    const loadNextBatch = () => {
+      if (nextBatch >= TOTAL_FRAMES) return
+      const end = Math.min(nextBatch + 25, TOTAL_FRAMES)
+      for (let i = nextBatch; i < end; i++) {
+        images[i].src = getFramePath(i)
+      }
+      nextBatch = end
+      if (nextBatch < TOTAL_FRAMES) {
+        batchTimer = window.setTimeout(loadNextBatch, isMobile ? 80 : 40)
+      }
     }
+    batchTimer = window.setTimeout(loadNextBatch, 80)
 
     const resizeCanvas = () => {
       const cvs = canvasRef.current
       if (!cvs) return
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 2)
       const w = window.innerWidth
       const h = window.innerHeight
       const targetW = Math.round(w * dpr)
@@ -152,13 +168,23 @@ export default function City({ id = 'city' }: CityProps) {
 
     let current: number | null = null
     let frame = 0
+    let charsSettled = false
 
     const tick = () => {
       const vh = window.innerHeight
-      const scrolled = -section.getBoundingClientRect().top
+      const rect = section.getBoundingClientRect()
+
+      // Idle when off-screen to save mobile battery and thread bandwidth
+      if (rect.bottom < -80 || rect.top > vh + 80) {
+        pauseKolkataMusic()
+        frame = requestAnimationFrame(tick)
+        return
+      }
+
+      const scrolled = -rect.top
       const range = section.offsetHeight - vh
       const target = Math.min(range, Math.max(0, scrolled))
-      current = current === null ? target : current + (target - current) * SMOOTHING
+      current = current === null ? target : current + (target - current) * smoothing
 
       // ==========================================
       // TIMELINE STAGES:
@@ -174,15 +200,27 @@ export default function City({ id = 'city' }: CityProps) {
       const line1Progress = clamp(current / line1Duration)
       const totalChars = LINE1_TEXT.length
 
-      charsRef.current.forEach((charEl, idx) => {
-        if (!charEl) return
-        const start = (idx / totalChars) * 0.72
-        const duration = 0.28
-        const p = clamp((line1Progress - start) / duration)
-        const eased = ease(p)
-        charEl.style.opacity = String(eased)
-        charEl.style.transform = `translateY(${(1 - eased) * 26}px) scale(${0.88 + eased * 0.12})`
-      })
+      if (line1Progress >= 1) {
+        if (!charsSettled) {
+          charsRef.current.forEach((charEl) => {
+            if (!charEl) return
+            charEl.style.opacity = '1'
+            charEl.style.transform = 'translateY(0px) scale(1)'
+          })
+          charsSettled = true
+        }
+      } else {
+        charsSettled = false
+        charsRef.current.forEach((charEl, idx) => {
+          if (!charEl) return
+          const start = (idx / totalChars) * 0.72
+          const duration = 0.28
+          const p = clamp((line1Progress - start) / duration)
+          const eased = ease(p)
+          charEl.style.opacity = String(eased)
+          charEl.style.transform = `translateY(${(1 - eased) * 26}px) scale(${0.88 + eased * 0.12})`
+        })
+      }
 
       // 2. Line 2: Fades & slides up after Line 1 starts appearing
       const line2Start = vh * 0.9
@@ -233,7 +271,6 @@ export default function City({ id = 'city' }: CityProps) {
 
       // 6. Background audio control: plays in loop when Kolkata video scrubbing starts
       // Stops immediately when user scrolls above (into intro or above section) or below the city section
-      const rect = section.getBoundingClientRect()
       const isAbove = current < scrubStart || rect.top > 0
       const isBelow = scrolled >= range || rect.bottom <= 0
       const shouldPlayAudio = !isAbove && !isBelow
@@ -258,6 +295,7 @@ export default function City({ id = 'city' }: CityProps) {
 
     return () => {
       cancelAnimationFrame(frame)
+      if (batchTimer) clearTimeout(batchTimer)
       window.removeEventListener('resize', resizeCanvas)
       document.removeEventListener('visibilitychange', onVisibilityChange)
       pauseKolkataMusic()

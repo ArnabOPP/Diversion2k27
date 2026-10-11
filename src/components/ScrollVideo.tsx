@@ -108,21 +108,37 @@ export default function ScrollVideo() {
       lastDrawnWasFallbackRef.current = isFallback
     }
 
-    // Priority load first frame immediately
-    images[0].src = getFramePath(0)
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768
+    const smoothing = isMobile ? 0.22 : SMOOTHING
+
+    // Priority load first 20 frames immediately so scrubbing is instant
+    for (let i = 0; i < Math.min(20, TOTAL_FRAMES); i++) {
+      images[i].src = getFramePath(i)
+    }
     if (images[0].complete && images[0].naturalWidth > 0) {
       renderCanvas(0)
     }
 
-    // Preload remaining frames
-    for (let i = 1; i < TOTAL_FRAMES; i++) {
-      images[i].src = getFramePath(i)
+    // Stream remaining frames in non-blocking batches to prevent mobile network/thread choking
+    let nextBatch = 20
+    let batchTimer: number | null = null
+    const loadNextBatch = () => {
+      if (nextBatch >= TOTAL_FRAMES) return
+      const end = Math.min(nextBatch + 20, TOTAL_FRAMES)
+      for (let i = nextBatch; i < end; i++) {
+        images[i].src = getFramePath(i)
+      }
+      nextBatch = end
+      if (nextBatch < TOTAL_FRAMES) {
+        batchTimer = window.setTimeout(loadNextBatch, isMobile ? 80 : 40)
+      }
     }
+    batchTimer = window.setTimeout(loadNextBatch, 80)
 
     const resizeCanvas = () => {
       const cvs = canvasRef.current
       if (!cvs) return
-      const dpr = Math.min(window.devicePixelRatio || 1, 2)
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1.25 : 2)
       const w = window.innerWidth
       const h = window.innerHeight
       const targetW = Math.round(w * dpr)
@@ -143,10 +159,18 @@ export default function ScrollVideo() {
 
     const tick = () => {
       const vh = window.innerHeight
-      const scrolled = -section.getBoundingClientRect().top
+      const rect = section.getBoundingClientRect()
+
+      // Idle when off-screen to save mobile battery and thread bandwidth
+      if (rect.bottom < -80 || rect.top > vh + 80) {
+        frame = requestAnimationFrame(tick)
+        return
+      }
+
+      const scrolled = -rect.top
       const range = section.offsetHeight - vh
       const target = Math.min(range, Math.max(0, scrolled))
-      current = current === null ? target : current + (target - current) * SMOOTHING
+      current = current === null ? target : current + (target - current) * smoothing
 
       // 1. About text layer: starts fully visible, holds, then animates OUT as user scrolls
       const aboutOutStart = vh * ABOUT_HOLD_VH
@@ -156,7 +180,9 @@ export default function ScrollVideo() {
 
       aboutLayer.style.opacity = String(aboutOpacity)
       aboutLayer.style.transform = `translateY(${-aboutOutEased * 70}px) scale(${1 - aboutOutEased * 0.05})`
-      aboutLayer.style.filter = `blur(${aboutOutEased * 6}px)`
+      if (!isMobile) {
+        aboutLayer.style.filter = `blur(${aboutOutEased * 6}px)`
+      }
       aboutLayer.style.pointerEvents = aboutOpacity > 0.15 ? 'auto' : 'none'
 
       // 2. Car frame scrubbing: starts ONLY AFTER the about texts animation completes!
@@ -181,6 +207,7 @@ export default function ScrollVideo() {
     frame = requestAnimationFrame(tick)
     return () => {
       cancelAnimationFrame(frame)
+      if (batchTimer) clearTimeout(batchTimer)
       window.removeEventListener('resize', resizeCanvas)
     }
   }, [])

@@ -36,9 +36,10 @@ export default function Hero({ active = true }: HeroProps) {
   const curtainBorderRef = useRef<HTMLDivElement>(null)
   const [ended, setEnded] = useState(false)
   const endedRef = useRef(false)
+  const [showTitleLogo, setShowTitleLogo] = useState(false)
   const [videoSrc, setVideoSrc] = useState(() => {
     if (typeof window !== 'undefined' && window.matchMedia('(max-width: 768px)').matches) {
-      return asset('plane-mobile.mp4')
+      return asset('plane-mobile-2.mp4')
     }
     return asset('plane-4k.mp4')
   })
@@ -46,11 +47,30 @@ export default function Hero({ active = true }: HeroProps) {
   useEffect(() => {
     const mql = window.matchMedia('(max-width: 768px)')
     const updateSrc = () => {
-      setVideoSrc(mql.matches ? asset('plane-mobile.mp4') : asset('plane-4k.mp4'))
+      setVideoSrc(mql.matches ? asset('plane-mobile-2.mp4') : asset('plane-4k.mp4'))
     }
     mql.addEventListener('change', updateSrc)
     return () => mql.removeEventListener('change', updateSrc)
   }, [])
+
+  // Listen for plane exit (around 3.2s) to show the Diversion 2K27 title logo
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const handleTimeUpdate = () => {
+      if (video.currentTime >= 3.2) {
+        setShowTitleLogo(true)
+      } else if (video.currentTime < 1.0) {
+        setShowTitleLogo(false)
+      }
+    }
+
+    video.addEventListener('timeupdate', handleTimeUpdate)
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate)
+    }
+  }, [videoSrc])
 
   // Ensure video is warmed up and buffered in memory on mount or src change
   useEffect(() => {
@@ -78,6 +98,7 @@ export default function Hero({ active = true }: HeroProps) {
       }
       endedRef.current = false
       setEnded(false)
+      setShowTitleLogo(false)
       video.muted = true
       video.play().catch(() => {})
     }
@@ -229,6 +250,7 @@ export default function Hero({ active = true }: HeroProps) {
     video.currentTime = 0
     endedRef.current = false
     setEnded(false)
+    setShowTitleLogo(false)
     video.muted = true
     video.play().catch(() => {})
     restartHeroMusic()
@@ -249,8 +271,17 @@ export default function Hero({ active = true }: HeroProps) {
             onEnded={() => {
               endedRef.current = true
               setEnded(true)
+              setShowTitleLogo(true)
             }}
           />
+
+          {showTitleLogo && (
+            <img
+              className="hero__title-logo"
+              src="/diversion%20logo.png"
+              alt="Diversion 2K27"
+            />
+          )}
 
           {ended && (
             <>
