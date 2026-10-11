@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import './ScrollVideo.css'
 
-const TOTAL_FRAMES = 150
+const TOTAL_FRAMES = 288
 const SMOOTHING = 0.12 // 0-1: how quickly everything catches up with the scroll position
 const ABOUT_HOLD_VH = 0.8 // distance about text stays readable over car frames before animating out
 const ABOUT_OUT_VH = 1.0 // scroll distance spent animating the about texts out
@@ -12,7 +12,7 @@ const ease = (t: number) => t * t * (3 - 2 * t)
 
 const getFramePath = (index: number) => {
   const pad = String(index + 1).padStart(3, '0')
-  return `/car-frames/ezgif-frame-${pad}.jpg`
+  return `/kolkata-frames/ezgif-frame-${pad}.jpg`
 }
 
 export default function ScrollVideo() {
