@@ -352,9 +352,10 @@
   z-index: 10;
   padding: 14px 44px;
   background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(216, 180, 254, 0.45);
   border-radius: 999px;
-  color: #fff;
+  color: #d8b4fe;
+  text-shadow: 0 0 14px rgba(192, 132, 252, 0.6), 0 2px 4px rgba(0, 0, 0, 0.8);
   font-family: 'Pricedown', 'Bebas Neue', Impact, sans-serif;
   font-size: 26px;
   letter-spacing: 0.12em;
@@ -362,17 +363,19 @@
   cursor: pointer;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(216, 180, 254, 0.25);
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease, text-shadow 0.25s ease;
   user-select: none;
   animation: curtain-prompt-pulse 2.2s infinite ease-in-out;
 }
 
 .curtain__prompt:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.75);
+  background: rgba(192, 132, 252, 0.16);
+  border-color: rgba(216, 180, 254, 0.85);
+  color: #f5d0fe;
+  text-shadow: 0 0 18px rgba(216, 180, 254, 0.9), 0 2px 4px rgba(0, 0, 0, 0.8);
   transform: translate(-50%, -50%) scale(1.05);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 22px rgba(192, 132, 252, 0.5);
 }
 
 @keyframes curtain-prompt-pulse {
