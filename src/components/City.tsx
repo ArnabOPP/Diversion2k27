@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import './City.css'
 
 const TOTAL_FRAMES = 288
-const SMOOTHING = 0.12
+const SMOOTHING = 0.08
 const FADE_OUT_VH = 0.6
 
 const clamp = (v: number) => Math.min(1, Math.max(0, v))
