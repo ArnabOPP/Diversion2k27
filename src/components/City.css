@@ -49,49 +49,67 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(1.4rem, 2.8vw, 2.4rem);
-  padding: clamp(2rem, 5vw, 4rem);
+  gap: clamp(1.4rem, 3vh, 2.6rem);
+  padding: 0 clamp(1rem, 3vw, 2.5rem);
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
   text-align: center;
   pointer-events: none;
   user-select: none;
+  white-space: nowrap;
   will-change: opacity, transform, visibility;
 }
 
 /* Line 1: GTA ARRIVES IN KOLKATA CITY */
 .city-intro__line1 {
   font-family: 'Pricedown', Impact, sans-serif;
-  font-size: clamp(3.2rem, 7.8vw, 7.6rem);
-  line-height: 1.02;
+  font-size: clamp(1.8rem, 6.6vw, 7.6rem);
+  line-height: 1.05;
   letter-spacing: 0.04em;
   color: #fff;
   text-transform: uppercase;
-  text-shadow: 0 6px 32px rgba(0, 0, 0, 0.95), 0 0 45px rgba(255, 255, 255, 0.4);
+  white-space: nowrap;
+  text-wrap: nowrap;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.95), 0 0 45px rgba(255, 255, 255, 0.4);
   will-change: opacity, transform;
 }
 
 /* Line 2: SCROLL TO EXPLORE */
 .city-intro__line2 {
   font-family: 'Pricedown', Impact, sans-serif;
-  font-size: clamp(2rem, 4.2vw, 4.2rem);
+  font-size: clamp(1.3rem, 4.3vw, 4.4rem);
   line-height: 1.1;
   letter-spacing: 0.1em;
   color: #f7a8c9; /* GTA Hot Pink matching Vice City theme */
   text-transform: uppercase;
-  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 0 32px rgba(247, 168, 201, 0.75);
+  white-space: nowrap;
+  text-wrap: nowrap;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 0 35px rgba(247, 168, 201, 0.8);
   will-change: opacity, transform;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   .city__intro {
-    gap: 1.2rem;
-    padding: 1.5rem;
+    gap: clamp(0.8rem, 2.2vh, 1.5rem);
+    padding: 0 1rem;
   }
 
   .city-intro__line1 {
-    font-size: clamp(2.4rem, 10.5vw, 4.2rem);
+    font-size: clamp(1.4rem, 6.2vw, 3.2rem);
   }
 
   .city-intro__line2 {
-    font-size: clamp(1.6rem, 6.5vw, 2.6rem);
+    font-size: clamp(1rem, 4.1vw, 2.2rem);
+  }
+}
+
+@media (max-width: 420px) {
+  .city-intro__line1 {
+    font-size: 5.8vw;
+  }
+
+  .city-intro__line2 {
+    font-size: 3.9vw;
   }
 }
