@@ -133,7 +133,7 @@ export function getKolkataAudio(): HTMLAudioElement {
   return kolkataAudio!
 }
 
-// Global unlock listener: unlock kolkataAudio on the very first user interaction anywhere
+// Global unlock listener: unlock audio elements on the very first user interaction anywhere
 if (typeof window !== 'undefined') {
   const unlock = () => {
     if (kolkataUnlocked) return
@@ -151,6 +151,19 @@ if (typeof window !== 'undefined') {
         }).catch(() => {
           kolkataUnlocked = false
         })
+      }
+    }
+
+    const hAudio = getHeroAudio()
+    if (hAudio) {
+      const p2 = hAudio.play()
+      if (p2 !== undefined) {
+        p2.then(() => {
+          if (!heroPlaying) {
+            hAudio.pause()
+            hAudio.currentTime = 0
+          }
+        }).catch(() => {})
       }
     }
   }
@@ -227,4 +240,101 @@ export function pauseKolkataMusic(): void {
 export function isKolkataMusicPlaying(): boolean {
   return kolkataPlaying
 }
+
+// ==========================================
+// HERO SECTION AUDIO CONTROLLER (plane-full.mp3)
+// ==========================================
+let heroAudio: HTMLAudioElement | null = null
+let heroPlaying = false
+
+export function getHeroAudio(): HTMLAudioElement {
+  if (!heroAudio && typeof window !== 'undefined') {
+    const existing = document.getElementById('hero-audio') as HTMLAudioElement
+    if (existing) {
+      heroAudio = existing
+    } else {
+      heroAudio = new Audio('/plane-full.mp3')
+      heroAudio.id = 'hero-audio'
+      document.body.appendChild(heroAudio)
+    }
+    heroAudio.loop = true
+    heroAudio.volume = 0.85
+    heroAudio.preload = 'auto'
+  }
+  return heroAudio!
+}
+
+export function playHeroMusic(): void {
+  if (typeof window === 'undefined') return
+  if (heroPlaying) return
+  heroPlaying = true
+
+  const audio = getHeroAudio()
+  if (!audio) return
+
+  audio.muted = false
+  const p = audio.play()
+  if (p !== undefined) {
+    p.catch(() => {
+      audio.muted = true
+      audio.play().catch(() => {})
+
+      const unmute = () => {
+        if (heroPlaying && audio) {
+          audio.muted = false
+          if (audio.paused) {
+            audio.play().catch(() => {})
+          }
+        }
+        removeListeners()
+      }
+
+      const events = [
+        'pointerdown',
+        'pointermove',
+        'mousemove',
+        'click',
+        'keydown',
+        'touchstart',
+        'scroll',
+        'wheel',
+      ]
+      const removeListeners = () => {
+        events.forEach((e) => {
+          window.removeEventListener(e, unmute, true)
+          document.removeEventListener(e, unmute, true)
+        })
+      }
+
+      events.forEach((e) => {
+        window.addEventListener(e, unmute, { capture: true, passive: true })
+        document.addEventListener(e, unmute, { capture: true, passive: true })
+      })
+    })
+  }
+}
+
+export function pauseHeroMusic(): void {
+  if (typeof window === 'undefined') return
+  if (!heroPlaying && heroAudio && heroAudio.paused) return
+  heroPlaying = false
+
+  if (heroAudio && !heroAudio.paused) {
+    heroAudio.pause()
+  }
+}
+
+export function stopHeroMusic(): void {
+  if (typeof window === 'undefined') return
+  heroPlaying = false
+  if (heroAudio) {
+    heroAudio.pause()
+    heroAudio.currentTime = 0
+  }
+}
+
+export function isHeroMusicPlaying(): boolean {
+  return heroPlaying
+}
+
 

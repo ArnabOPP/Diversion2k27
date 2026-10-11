@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
-import { playGtaMusic, pauseGtaMusic, stopGtaMusic, resetGtaCurtain, setCurtainActive } from '@/utils/audio'
+import {
+  playGtaMusic,
+  pauseGtaMusic,
+  stopGtaMusic,
+  resetGtaCurtain,
+  setCurtainActive,
+  playHeroMusic,
+  pauseHeroMusic,
+  stopHeroMusic,
+} from '@/utils/audio'
 import './Hero.css'
 
 const asset = (name: string) => encodeURI(`/${name}`)
@@ -31,6 +40,7 @@ export default function Hero({ active = true }: HeroProps) {
     const video = videoRef.current
     if (video) {
       video.preload = 'auto'
+      video.muted = true
       video.load()
     }
   }, [])
@@ -43,34 +53,19 @@ export default function Hero({ active = true }: HeroProps) {
     }
   }, [active])
 
-  const playWithSound = () => {
+  const startHeroPlayback = () => {
     const video = videoRef.current
-    if (!video) return
-    // Only seek to 0 if the video has played substantially or completed; avoids seek pipeline stall
-    if (video.currentTime > 0.05 && endedRef.current) {
-      video.currentTime = 0
+    if (video) {
+      if (video.currentTime > 0.05 && endedRef.current) {
+        video.currentTime = 0
+      }
+      endedRef.current = false
+      setEnded(false)
+      video.muted = true
+      video.play().catch(() => {})
     }
-    endedRef.current = false
-    setEnded(false)
-    video.muted = false
-
-    const playPromise = video.play()
-    if (playPromise !== undefined) {
-      playPromise.catch(() => {
-        video.muted = true
-        video.play().catch(() => {})
-
-        const onFirstInteraction = () => {
-          if (videoRef.current) {
-            videoRef.current.muted = false
-          }
-        }
-        window.addEventListener('pointerdown', onFirstInteraction, { once: true })
-        window.addEventListener('keydown', onFirstInteraction, { once: true })
-        window.addEventListener('click', onFirstInteraction, { once: true })
-        window.addEventListener('touchstart', onFirstInteraction, { once: true })
-      })
-    }
+    // Play plane-full.mp3 in loop
+    playHeroMusic()
   }
 
   const handleEnterCity = (e?: React.MouseEvent) => {
@@ -79,8 +74,8 @@ export default function Hero({ active = true }: HeroProps) {
     // Stop GTA theme music immediately when curtain begins opening
     stopGtaMusic()
 
-    // Immediate video playback on user gesture avoids audio restriction and starts the 4K decoder pipeline instantly
-    playWithSound()
+    // Start hero video and looping plane-full.mp3 audio
+    startHeroPlayback()
 
     const section = sectionRef.current
     if (section) {
@@ -133,7 +128,7 @@ export default function Hero({ active = true }: HeroProps) {
         if (!curtainWasOpen) {
           curtainWasOpen = true
           stopGtaMusic()
-          playWithSound()
+          startHeroPlayback()
         }
       } else {
         curtainLayer.style.visibility = 'visible'
@@ -141,6 +136,7 @@ export default function Hero({ active = true }: HeroProps) {
         sticky.style.zIndex = '60'
         if (curtainProgress < 0.05 && curtainWasOpen) {
           curtainWasOpen = false
+          stopHeroMusic()
           const video = videoRef.current
           if (video && !video.paused) {
             video.pause()
@@ -163,14 +159,16 @@ export default function Hero({ active = true }: HeroProps) {
 
       if (!isInsideHero) {
         // Scrolled down or up away from Hero section: pause all hero audio immediately
+        pauseHeroMusic()
         if (video && !video.paused) {
           video.pause()
         }
         pauseGtaMusic()
       } else {
-        // Inside Hero section: resume playback if curtain is open and video not ended
-        if (curtainWasOpen && !endedRef.current) {
-          if (video && video.paused) {
+        // Inside Hero section: keep playing plane-full.mp3 in loop while in hero
+        if (curtainWasOpen) {
+          playHeroMusic()
+          if (video && video.paused && !endedRef.current) {
             video.play().catch(() => {})
           }
         }
@@ -183,6 +181,7 @@ export default function Hero({ active = true }: HeroProps) {
 
     const onVisibility = () => {
       if (document.hidden) {
+        pauseHeroMusic()
         if (videoRef.current && !videoRef.current.paused) {
           videoRef.current.pause()
         }
@@ -194,31 +193,11 @@ export default function Hero({ active = true }: HeroProps) {
     return () => {
       cancelAnimationFrame(frame)
       document.removeEventListener('visibilitychange', onVisibility)
+      pauseHeroMusic()
       if (videoRef.current && !videoRef.current.paused) {
         videoRef.current.pause()
       }
       pauseGtaMusic()
-    }
-  }, [])
-
-  // Listen for user gestures to automatically unmute if initial playback was restricted by browser
-  useEffect(() => {
-    const onUserGesture = () => {
-      const video = videoRef.current
-      if (video && video.muted && !video.paused) {
-        video.muted = false
-      }
-    }
-
-    window.addEventListener('pointerdown', onUserGesture)
-    window.addEventListener('click', onUserGesture)
-    window.addEventListener('keydown', onUserGesture)
-    window.addEventListener('touchstart', onUserGesture)
-    return () => {
-      window.removeEventListener('pointerdown', onUserGesture)
-      window.removeEventListener('click', onUserGesture)
-      window.removeEventListener('keydown', onUserGesture)
-      window.removeEventListener('touchstart', onUserGesture)
     }
   }, [])
 
@@ -228,8 +207,9 @@ export default function Hero({ active = true }: HeroProps) {
     video.currentTime = 0
     endedRef.current = false
     setEnded(false)
-    video.muted = false
+    video.muted = true
     video.play().catch(() => {})
+    playHeroMusic()
   }
 
   return (
@@ -242,6 +222,7 @@ export default function Hero({ active = true }: HeroProps) {
             src={asset('plane-4k.mp4')}
             playsInline
             preload="auto"
+            muted
             onEnded={() => {
               endedRef.current = true
               setEnded(true)
