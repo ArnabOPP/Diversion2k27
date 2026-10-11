@@ -333,6 +333,20 @@ export function stopHeroMusic(): void {
   }
 }
 
+export function restartHeroMusic(): void {
+  if (typeof window === 'undefined') return
+  const audio = getHeroAudio()
+  if (!audio) return
+
+  audio.currentTime = 0
+  audio.muted = false
+  heroPlaying = true
+  const p = audio.play()
+  if (p !== undefined) {
+    p.catch(() => {})
+  }
+}
+
 export function isHeroMusicPlaying(): boolean {
   return heroPlaying
 }

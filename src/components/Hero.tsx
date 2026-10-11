@@ -8,6 +8,7 @@ import {
   playHeroMusic,
   pauseHeroMusic,
   stopHeroMusic,
+  restartHeroMusic,
 } from '@/utils/audio'
 import './Hero.css'
 
@@ -215,7 +216,7 @@ export default function Hero({ active = true }: HeroProps) {
     setEnded(false)
     video.muted = true
     video.play().catch(() => {})
-    playHeroMusic()
+    restartHeroMusic()
   }
 
   return (
