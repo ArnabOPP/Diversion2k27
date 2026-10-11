@@ -121,36 +121,36 @@
 /* Sponsor / Chapter logos placed above the Diversion logo */
 .hero__logos {
   position: absolute;
-  top: 24%;
+  top: 22.5%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(1.4rem, 3.5vw, 3.2rem);
+  gap: clamp(1.8rem, 4.2vw, 4.2rem);
   width: max-content;
   max-width: 92vw;
   animation: hero-logos-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .hero__logo {
-  height: clamp(34px, 5.2vw, 64px);
+  height: clamp(52px, 7.8vw, 102px);
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.8)) drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0 2px 10px rgba(255, 255, 255, 0.85)) drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55));
   transition: transform 0.25s ease, filter 0.25s ease;
   user-select: none;
   pointer-events: auto;
 }
 
 .hero__logo--acm {
-  height: clamp(28px, 4.4vw, 55px);
+  height: clamp(44px, 6.6vw, 88px);
 }
 
 .hero__logo:hover {
-  transform: translateY(-2px) scale(1.05);
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.95)) drop-shadow(0 6px 16px rgba(0, 0, 0, 0.65));
+  transform: translateY(-3px) scale(1.06);
+  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.98)) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.7));
 }
 
 @keyframes hero-logos-fade-in {
@@ -242,17 +242,17 @@
 
 @media (max-width: 680px) {
   .hero__logos {
-    top: 25%;
-    gap: 0.9rem;
+    top: 23%;
+    gap: clamp(0.9rem, 3.5vw, 1.6rem);
     max-width: 95vw;
   }
 
   .hero__logo {
-    height: clamp(26px, 7.5vw, 42px);
+    height: clamp(38px, 11vw, 62px);
   }
 
   .hero__logo--acm {
-    height: clamp(22px, 6.2vw, 36px);
+    height: clamp(32px, 9.4vw, 54px);
   }
 
   .hero__actions {
