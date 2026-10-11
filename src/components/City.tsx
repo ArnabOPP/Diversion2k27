@@ -21,6 +21,10 @@ export default function City({ id = 'city' }: CityProps) {
   const sectionRef = useRef<HTMLElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const blackScreenRef = useRef<HTMLDivElement>(null)
+  const introLayerRef = useRef<HTMLDivElement>(null)
+  const line1Ref = useRef<HTMLDivElement>(null)
+  const line2Ref = useRef<HTMLDivElement>(null)
 
   const imagesRef = useRef<HTMLImageElement[]>([])
   const lastDrawnIndexRef = useRef<number>(-1)
@@ -32,7 +36,11 @@ export default function City({ id = 'city' }: CityProps) {
     const section = sectionRef.current
     const sticky = stickyRef.current
     const canvas = canvasRef.current
-    if (!section || !sticky || !canvas) return
+    const blackScreen = blackScreenRef.current
+    const introLayer = introLayerRef.current
+    const line1 = line1Ref.current
+    const line2 = line2Ref.current
+    if (!section || !sticky || !canvas || !blackScreen || !introLayer || !line1 || !line2) return
 
     // Preload image frames
     const images: HTMLImageElement[] = []
@@ -148,13 +156,60 @@ export default function City({ id = 'city' }: CityProps) {
       const target = Math.min(range, Math.max(0, scrolled))
       current = current === null ? target : current + (target - current) * SMOOTHING
 
-      // Frame scrubbing across Kolkata drone frames
-      const progress = range > 0 ? clamp(current / range) : 0
-      const targetFrame = Math.min(TOTAL_FRAMES - 1, Math.max(0, Math.round(progress * (TOTAL_FRAMES - 1))))
+      // ==========================================
+      // TIMELINE STAGES:
+      // 0.0 - 1.0 vh: First line appears ("GTA ARRIVES IN KOLKATA CITY")
+      // 1.0 - 2.0 vh: Second line appears ("SCROLL TO EXPLORE")
+      // 2.0 - 2.8 vh: Hold text on black screen
+      // 2.8 - 3.8 vh: Text fades out & black screen dissolves to reveal drone footage
+      // 3.8 vh onwards: Actual scroll-scrubbing of the 288 frames begins!
+      // ==========================================
+
+      // 1. Line 1: Fades & slides up on scroll
+      const line1Progress = clamp(current / (vh * 1.0))
+      const line1Eased = ease(line1Progress)
+      line1.style.opacity = String(line1Eased)
+      line1.style.transform = `translateY(${(1 - line1Eased) * 32}px)`
+
+      // 2. Line 2: Fades & slides up after Line 1
+      const line2Start = vh * 1.0
+      const line2Progress = clamp((current - line2Start) / (vh * 1.0))
+      const line2Eased = ease(line2Progress)
+      line2.style.opacity = String(line2Eased)
+      line2.style.transform = `translateY(${(1 - line2Eased) * 32}px)`
+
+      // 3. Intro fade-out & Black screen dissolve
+      const dissolveStart = vh * 2.8
+      const dissolveDuration = vh * 1.0
+      const dissolveProgress = clamp((current - dissolveStart) / dissolveDuration)
+      const dissolveEased = ease(dissolveProgress)
+      const dissolveOpacity = 1 - dissolveEased
+
+      blackScreen.style.opacity = String(dissolveOpacity)
+      introLayer.style.opacity = String(dissolveOpacity)
+      introLayer.style.transform = `translateY(${-dissolveEased * 30}px) scale(${1 - dissolveEased * 0.03})`
+
+      if (dissolveOpacity <= 0.005) {
+        blackScreen.style.visibility = 'hidden'
+        introLayer.style.visibility = 'hidden'
+      } else {
+        blackScreen.style.visibility = 'visible'
+        introLayer.style.visibility = 'visible'
+      }
+
+      // 4. Actual video scrubbing begins ONLY after intro dissolve finishes
+      const scrubStart = dissolveStart + dissolveDuration
+      let targetFrame = 0
+      if (current >= scrubStart) {
+        const scrubRange = range - scrubStart - vh * FADE_OUT_VH
+        const scrubProgress = scrubRange > 0 ? clamp((current - scrubStart) / scrubRange) : 0
+        targetFrame = Math.min(TOTAL_FRAMES - 1, Math.max(0, Math.round(scrubProgress * (TOTAL_FRAMES - 1))))
+      }
+
       currentTargetFrameRef.current = targetFrame
       renderCanvas(targetFrame)
 
-      // Fade out smoothly at end of scroll track
+      // 5. Fade out section smoothly at end of scroll track
       const fadeStart = range - vh * FADE_OUT_VH
       if (current >= fadeStart && range > fadeStart) {
         const fadeOut = ease(clamp((current - fadeStart) / (vh * FADE_OUT_VH)))
@@ -177,6 +232,19 @@ export default function City({ id = 'city' }: CityProps) {
     <section ref={sectionRef} id={id} className="city">
       <div ref={stickyRef} className="city__sticky">
         <canvas ref={canvasRef} className="city__canvas" />
+
+        {/* Solid black screen that initially covers the video */}
+        <div ref={blackScreenRef} className="city__black-screen" />
+
+        {/* Intro text sequence */}
+        <div ref={introLayerRef} className="city__intro">
+          <div ref={line1Ref} className="city-intro__line1">
+            GTA ARRIVES IN KOLKATA CITY
+          </div>
+          <div ref={line2Ref} className="city-intro__line2">
+            SCROLL TO EXPLORE
+          </div>
+        </div>
       </div>
     </section>
   )

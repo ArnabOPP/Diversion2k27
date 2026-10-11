@@ -1,7 +1,14 @@
-/* City section: Full-screen scroll-scrubbed Kolkata drone footage */
+/* Pricedown GTA Font */
+@font-face {
+  font-family: 'Pricedown';
+  src: url('/Pricedown%20Bl.otf') format('opentype');
+  font-display: swap;
+}
+
+/* City section: Full-screen scroll-scrubbed Kolkata drone footage with cinematic intro */
 .city {
   position: relative;
-  height: 950vh;
+  height: 1200vh;
   background: #000;
 }
 
@@ -10,6 +17,7 @@
   top: 0;
   height: 100vh;
   overflow: hidden;
+  background: #000;
 }
 
 .city__canvas {
@@ -19,4 +27,71 @@
   height: 100%;
   display: block;
   object-fit: cover;
+  z-index: 1;
+}
+
+/* Solid black screen covering the canvas initially */
+.city__black-screen {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  z-index: 2;
+  will-change: opacity, visibility;
+  pointer-events: none;
+}
+
+/* Two-line intro typography layer */
+.city__intro {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1.4rem, 2.8vw, 2.4rem);
+  padding: clamp(2rem, 5vw, 4rem);
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+  will-change: opacity, transform, visibility;
+}
+
+/* Line 1: GTA ARRIVES IN KOLKATA CITY */
+.city-intro__line1 {
+  font-family: 'Pricedown', Impact, sans-serif;
+  font-size: clamp(2.4rem, 5.8vw, 5.2rem);
+  line-height: 1.05;
+  letter-spacing: 0.05em;
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 0 35px rgba(255, 255, 255, 0.35);
+  will-change: opacity, transform;
+}
+
+/* Line 2: SCROLL TO EXPLORE */
+.city-intro__line2 {
+  font-family: 'Pricedown', Impact, sans-serif;
+  font-size: clamp(1.6rem, 3.4vw, 3rem);
+  line-height: 1.1;
+  letter-spacing: 0.12em;
+  color: #f7a8c9; /* GTA Hot Pink matching Vice City theme */
+  text-transform: uppercase;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.95), 0 0 28px rgba(247, 168, 201, 0.7);
+  will-change: opacity, transform;
+}
+
+@media (max-width: 680px) {
+  .city__intro {
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .city-intro__line1 {
+    font-size: clamp(2rem, 8.5vw, 3.2rem);
+  }
+
+  .city-intro__line2 {
+    font-size: clamp(1.3rem, 5.5vw, 2rem);
+  }
 }
