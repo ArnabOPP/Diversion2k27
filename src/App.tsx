@@ -63,7 +63,6 @@ export default function App() {
       <div className={isStart ? 'hero-wait' : 'zoom-in'}>
         <Hero active={screen === 'hero'} />
         <ScrollVideo />
-        <About id="hacker-guide" last content="hackerGuide" />
         <ScrubVideo src="/video%203%20scrub.mp4" />
         <PrizePool id="prizes" />
         <ScrubVideo src="/video%204%20scrub.mp4" />
