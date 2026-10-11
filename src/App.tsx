@@ -7,7 +7,7 @@ import Partners from '@/components/Partners'
 import Schedule from '@/components/Schedule'
 import ScrubVideo from '@/components/ScrubVideo'
 import Visit from '@/components/Visit'
-import PrizePool from '@/components/PrizePool'
+import City from '@/components/City'
 import ScrollVideo from '@/components/ScrollVideo'
 import Start from '@/components/Start'
 
@@ -63,7 +63,7 @@ export default function App() {
       <div className={isStart ? 'hero-wait' : 'zoom-in'}>
         <Hero active={screen === 'hero'} />
         <ScrollVideo />
-        <PrizePool id="prizes" />
+        <City id="city" />
         <ScrubVideo src="/video%204%20scrub.mp4" />
         <Schedule />
         <Visit id="visit-2" after="schedule" videoNext />

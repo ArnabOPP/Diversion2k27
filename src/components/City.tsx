@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import './PrizePool.css'
+import './City.css'
 
 const TOTAL_FRAMES = 288
 const SMOOTHING = 0.12
@@ -13,15 +13,14 @@ const getFramePath = (index: number) => {
   return `/kolkata-frames/ezgif-frame-${pad}.jpg`
 }
 
-interface PrizePoolProps {
+interface CityProps {
   id?: string
 }
 
-export default function PrizePool({ id = 'prizes' }: PrizePoolProps) {
+export default function City({ id = 'city' }: CityProps) {
   const sectionRef = useRef<HTMLElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const contentLayerRef = useRef<HTMLDivElement>(null)
 
   const imagesRef = useRef<HTMLImageElement[]>([])
   const lastDrawnIndexRef = useRef<number>(-1)
@@ -33,8 +32,7 @@ export default function PrizePool({ id = 'prizes' }: PrizePoolProps) {
     const section = sectionRef.current
     const sticky = stickyRef.current
     const canvas = canvasRef.current
-    const contentLayer = contentLayerRef.current
-    if (!section || !sticky || !canvas || !contentLayer) return
+    if (!section || !sticky || !canvas) return
 
     // Preload image frames
     const images: HTMLImageElement[] = []
@@ -150,13 +148,13 @@ export default function PrizePool({ id = 'prizes' }: PrizePoolProps) {
       const target = Math.min(range, Math.max(0, scrolled))
       current = current === null ? target : current + (target - current) * SMOOTHING
 
-      // Frame scrubbing across the 288 Kolkata drone frames
+      // Frame scrubbing across Kolkata drone frames
       const progress = range > 0 ? clamp(current / range) : 0
       const targetFrame = Math.min(TOTAL_FRAMES - 1, Math.max(0, Math.round(progress * (TOTAL_FRAMES - 1))))
       currentTargetFrameRef.current = targetFrame
       renderCanvas(targetFrame)
 
-      // Fade out gently as next section approaches
+      // Fade out smoothly at end of scroll track
       const fadeStart = range - vh * FADE_OUT_VH
       if (current >= fadeStart && range > fadeStart) {
         const fadeOut = ease(clamp((current - fadeStart) / (vh * FADE_OUT_VH)))
@@ -176,17 +174,9 @@ export default function PrizePool({ id = 'prizes' }: PrizePoolProps) {
   }, [])
 
   return (
-    <section ref={sectionRef} id={id} className="prize-pool">
-      <div ref={stickyRef} className="prize-pool__sticky">
-        <canvas ref={canvasRef} className="prize-pool__canvas" />
-        <div className="prize-pool__overlay" />
-
-        <div ref={contentLayerRef} className="prize-pool__content">
-          <div className="prize-pool__card">
-            <h2 className="prize-pool__title">PRIZE POOL</h2>
-            <h3 className="prize-pool__tagline">COMING SOON</h3>
-          </div>
-        </div>
+    <section ref={sectionRef} id={id} className="city">
+      <div ref={stickyRef} className="city__sticky">
+        <canvas ref={canvasRef} className="city__canvas" />
       </div>
     </section>
   )

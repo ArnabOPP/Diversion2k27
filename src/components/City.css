@@ -1,0 +1,22 @@
+/* City section: Full-screen scroll-scrubbed Kolkata drone footage */
+.city {
+  position: relative;
+  height: 500vh;
+  background: #000;
+}
+
+.city__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.city__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}

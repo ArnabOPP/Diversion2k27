@@ -5,7 +5,8 @@ import './Menu.css'
 const ITEMS: { label: string; target: string | null }[] = [
   { label: 'Home', target: null },
   { label: 'About', target: 'about' },
-  { label: 'Prizes', target: 'prizes' },
+  { label: 'City', target: 'city' },
+  { label: 'Prizes', target: 'visit-4' },
   { label: 'Schedule', target: 'schedule' },
   { label: 'Partners', target: 'about-4' },
   { label: 'FAQ', target: 'faq' },
