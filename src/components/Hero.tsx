@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { playGtaMusic, stopGtaMusic, resetGtaCurtain, setCurtainActive } from '@/utils/audio'
+import { playGtaMusic, pauseGtaMusic, stopGtaMusic, resetGtaCurtain, setCurtainActive } from '@/utils/audio'
 import './Hero.css'
 
 const asset = (name: string) => encodeURI(`/${name}`)
@@ -24,6 +24,7 @@ export default function Hero({ active = true }: HeroProps) {
   const curtainBottomRef = useRef<HTMLDivElement>(null)
   const curtainPromptRef = useRef<HTMLButtonElement>(null)
   const [ended, setEnded] = useState(false)
+  const endedRef = useRef(false)
 
   // Ensure video is warmed up and buffered in memory on mount
   useEffect(() => {
@@ -46,9 +47,10 @@ export default function Hero({ active = true }: HeroProps) {
     const video = videoRef.current
     if (!video) return
     // Only seek to 0 if the video has played substantially or completed; avoids seek pipeline stall
-    if (video.currentTime > 0.05 && ended) {
+    if (video.currentTime > 0.05 && endedRef.current) {
       video.currentTime = 0
     }
+    endedRef.current = false
     setEnded(false)
     video.muted = false
 
@@ -143,9 +145,34 @@ export default function Hero({ active = true }: HeroProps) {
           if (video && !video.paused) {
             video.pause()
             video.currentTime = 0
+            endedRef.current = false
             setEnded(false)
           }
           resetGtaCurtain()
+        }
+      }
+
+      // Check whether Hero section is currently in view
+      // When scrolled down or up away from Hero section, all audio must stop
+      const rect = section.getBoundingClientRect()
+      const isPastBottom = scrolled >= range || rect.bottom <= 0
+      const isBeforeTop = rect.top > 0 && scrolled < 0
+      const isInsideHero = !isPastBottom && !isBeforeTop
+
+      const video = videoRef.current
+
+      if (!isInsideHero) {
+        // Scrolled down or up away from Hero section: pause all hero audio immediately
+        if (video && !video.paused) {
+          video.pause()
+        }
+        pauseGtaMusic()
+      } else {
+        // Inside Hero section: resume playback if curtain is open and video not ended
+        if (curtainWasOpen && !endedRef.current) {
+          if (video && video.paused) {
+            video.play().catch(() => {})
+          }
         }
       }
 
@@ -153,7 +180,25 @@ export default function Hero({ active = true }: HeroProps) {
     }
 
     frame = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(frame)
+
+    const onVisibility = () => {
+      if (document.hidden) {
+        if (videoRef.current && !videoRef.current.paused) {
+          videoRef.current.pause()
+        }
+        pauseGtaMusic()
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+
+    return () => {
+      cancelAnimationFrame(frame)
+      document.removeEventListener('visibilitychange', onVisibility)
+      if (videoRef.current && !videoRef.current.paused) {
+        videoRef.current.pause()
+      }
+      pauseGtaMusic()
+    }
   }, [])
 
   // Listen for user gestures to automatically unmute if initial playback was restricted by browser
@@ -181,6 +226,7 @@ export default function Hero({ active = true }: HeroProps) {
     const video = videoRef.current
     if (!video) return
     video.currentTime = 0
+    endedRef.current = false
     setEnded(false)
     video.muted = false
     video.play().catch(() => {})
@@ -196,7 +242,10 @@ export default function Hero({ active = true }: HeroProps) {
             src={asset('plane-4k.mp4')}
             playsInline
             preload="auto"
-            onEnded={() => setEnded(true)}
+            onEnded={() => {
+              endedRef.current = true
+              setEnded(true)
+            }}
           />
 
           {ended && (
