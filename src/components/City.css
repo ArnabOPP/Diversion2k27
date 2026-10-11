@@ -60,38 +60,38 @@
 /* Line 1: GTA ARRIVES IN KOLKATA CITY */
 .city-intro__line1 {
   font-family: 'Pricedown', Impact, sans-serif;
-  font-size: clamp(2.4rem, 5.8vw, 5.2rem);
-  line-height: 1.05;
-  letter-spacing: 0.05em;
+  font-size: clamp(3.2rem, 7.8vw, 7.6rem);
+  line-height: 1.02;
+  letter-spacing: 0.04em;
   color: #fff;
   text-transform: uppercase;
-  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 0 35px rgba(255, 255, 255, 0.35);
+  text-shadow: 0 6px 32px rgba(0, 0, 0, 0.95), 0 0 45px rgba(255, 255, 255, 0.4);
   will-change: opacity, transform;
 }
 
 /* Line 2: SCROLL TO EXPLORE */
 .city-intro__line2 {
   font-family: 'Pricedown', Impact, sans-serif;
-  font-size: clamp(1.6rem, 3.4vw, 3rem);
+  font-size: clamp(2rem, 4.2vw, 4.2rem);
   line-height: 1.1;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   color: #f7a8c9; /* GTA Hot Pink matching Vice City theme */
   text-transform: uppercase;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.95), 0 0 28px rgba(247, 168, 201, 0.7);
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.95), 0 0 32px rgba(247, 168, 201, 0.75);
   will-change: opacity, transform;
 }
 
 @media (max-width: 680px) {
   .city__intro {
-    gap: 1rem;
+    gap: 1.2rem;
     padding: 1.5rem;
   }
 
   .city-intro__line1 {
-    font-size: clamp(2rem, 8.5vw, 3.2rem);
+    font-size: clamp(2.4rem, 10.5vw, 4.2rem);
   }
 
   .city-intro__line2 {
-    font-size: clamp(1.3rem, 5.5vw, 2rem);
+    font-size: clamp(1.6rem, 6.5vw, 2.6rem);
   }
 }
