@@ -108,3 +108,123 @@ export function resetGtaCurtain(): void {
     playGtaMusic()
   }
 }
+
+// ==========================================
+// KOLKATA CITY BACKGROUND AUDIO CONTROLLER
+// ==========================================
+let kolkataAudio: HTMLAudioElement | null = null
+let kolkataPlaying = false
+let kolkataUnlocked = false
+
+export function getKolkataAudio(): HTMLAudioElement {
+  if (!kolkataAudio && typeof window !== 'undefined') {
+    const existing = document.getElementById('kolkata-audio') as HTMLAudioElement
+    if (existing) {
+      kolkataAudio = existing
+    } else {
+      kolkataAudio = new Audio('/kolkata.mp3')
+      kolkataAudio.id = 'kolkata-audio'
+      document.body.appendChild(kolkataAudio)
+    }
+    kolkataAudio.loop = true
+    kolkataAudio.volume = 0.85
+    kolkataAudio.preload = 'auto'
+  }
+  return kolkataAudio!
+}
+
+// Global unlock listener: unlock kolkataAudio on the very first user interaction anywhere
+if (typeof window !== 'undefined') {
+  const unlock = () => {
+    if (kolkataUnlocked) return
+    kolkataUnlocked = true
+    const audio = getKolkataAudio()
+    if (audio) {
+      // Play and immediately pause to grant user-activation permission to the audio element
+      const p = audio.play()
+      if (p !== undefined) {
+        p.then(() => {
+          if (!kolkataPlaying) {
+            audio.pause()
+            audio.currentTime = 0
+          }
+        }).catch(() => {
+          kolkataUnlocked = false
+        })
+      }
+    }
+  }
+
+  const events = ['pointerdown', 'click', 'keydown', 'touchstart']
+  events.forEach((e) => {
+    window.addEventListener(e, unlock, { capture: true, passive: true })
+    document.addEventListener(e, unlock, { capture: true, passive: true })
+  })
+}
+
+export function playKolkataMusic(): void {
+  if (typeof window === 'undefined') return
+  if (kolkataPlaying) return
+  kolkataPlaying = true
+
+  const audio = getKolkataAudio()
+  if (!audio) return
+
+  audio.muted = false
+  const p = audio.play()
+  if (p !== undefined) {
+    p.catch(() => {
+      // If unmuted playback failed, fallback to muted play then unmute on next interaction
+      audio.muted = true
+      audio.play().catch(() => {})
+
+      const unmute = () => {
+        if (kolkataPlaying && audio) {
+          audio.muted = false
+          if (audio.paused) {
+            audio.play().catch(() => {})
+          }
+        }
+        removeListeners()
+      }
+
+      const events = [
+        'pointerdown',
+        'pointermove',
+        'mousemove',
+        'click',
+        'keydown',
+        'touchstart',
+        'scroll',
+        'wheel',
+      ]
+      const removeListeners = () => {
+        events.forEach((e) => {
+          window.removeEventListener(e, unmute, true)
+          document.removeEventListener(e, unmute, true)
+        })
+      }
+
+      events.forEach((e) => {
+        window.addEventListener(e, unmute, { capture: true, passive: true })
+        document.addEventListener(e, unmute, { capture: true, passive: true })
+      })
+    })
+  }
+}
+
+export function pauseKolkataMusic(): void {
+  if (typeof window === 'undefined') return
+  if (!kolkataPlaying && kolkataAudio && kolkataAudio.paused) return
+  kolkataPlaying = false
+
+  if (kolkataAudio && !kolkataAudio.paused) {
+    kolkataAudio.pause()
+    kolkataAudio.currentTime = 0
+  }
+}
+
+export function isKolkataMusicPlaying(): boolean {
+  return kolkataPlaying
+}
+

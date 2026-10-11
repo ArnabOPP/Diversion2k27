@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { playKolkataMusic, pauseKolkataMusic, isKolkataMusicPlaying } from '@/utils/audio'
 import './City.css'
 
 const TOTAL_FRAMES = 288
@@ -28,7 +29,7 @@ export default function City({ id = 'city' }: CityProps) {
   const line1Ref = useRef<HTMLDivElement>(null)
   const line2Ref = useRef<HTMLDivElement>(null)
   const charsRef = useRef<(HTMLSpanElement | null)[]>([])
-  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false)
 
   const imagesRef = useRef<HTMLImageElement[]>([])
   const lastDrawnIndexRef = useRef<number>(-1)
@@ -45,13 +46,6 @@ export default function City({ id = 'city' }: CityProps) {
     const line1 = line1Ref.current
     const line2 = line2Ref.current
     if (!section || !sticky || !canvas || !blackScreen || !introLayer || !line1 || !line2) return
-
-    // Background audio for Kolkata drone scrub
-    const audio = new Audio('/kolkata.mp3')
-    audio.loop = true
-    audio.preload = 'auto'
-    audio.volume = 0.8
-    audioRef.current = audio
 
     // Preload image frames
     const images: HTMLImageElement[] = []
@@ -169,15 +163,15 @@ export default function City({ id = 'city' }: CityProps) {
 
       // ==========================================
       // TIMELINE STAGES:
-      // 0.0 - 1.5 vh: Line 1 letters appear one by one on scroll
-      // 1.5 - 2.5 vh: Line 2 appears ("SCROLL TO EXPLORE")
-      // 2.5 - 3.2 vh: Hold text on black screen
-      // 3.2 - 4.2 vh: Text dissolves & black screen fades to reveal drone video
-      // 4.2 vh onwards: Actual scroll-scrubbing of the 288 frames begins!
+      // 0.0 - 1.2 vh: Line 1 letters appear one by one on scroll
+      // 0.9 - 1.7 vh: Line 2 appears ("SCROLL TO EXPLORE")
+      // 1.7 - 2.1 vh: Hold text on black screen
+      // 2.1 - 2.8 vh: Text dissolves & black screen fades to reveal drone video
+      // 2.8 vh onwards: Actual scroll-scrubbing of the 288 frames begins & music plays!
       // ==========================================
 
       // 1. Line 1: Letters appear one by one on scroll
-      const line1Duration = vh * 1.5
+      const line1Duration = vh * 1.2
       const line1Progress = clamp(current / line1Duration)
       const totalChars = LINE1_TEXT.length
 
@@ -191,16 +185,16 @@ export default function City({ id = 'city' }: CityProps) {
         charEl.style.transform = `translateY(${(1 - eased) * 26}px) scale(${0.88 + eased * 0.12})`
       })
 
-      // 2. Line 2: Fades & slides up after Line 1 completes
-      const line2Start = line1Duration
-      const line2Progress = clamp((current - line2Start) / (vh * 1.0))
+      // 2. Line 2: Fades & slides up after Line 1 starts appearing
+      const line2Start = vh * 0.9
+      const line2Progress = clamp((current - line2Start) / (vh * 0.8))
       const line2Eased = ease(line2Progress)
       line2.style.opacity = String(line2Eased)
       line2.style.transform = `translateY(${(1 - line2Eased) * 32}px)`
 
       // 3. Intro fade-out & Black screen dissolve
-      const dissolveStart = line2Start + vh * 1.6
-      const dissolveDuration = vh * 1.0
+      const dissolveStart = vh * 2.0
+      const dissolveDuration = vh * 0.8
       const dissolveProgress = clamp((current - dissolveStart) / dissolveDuration)
       const dissolveEased = ease(dissolveProgress)
       const dissolveOpacity = 1 - dissolveEased
@@ -217,7 +211,7 @@ export default function City({ id = 'city' }: CityProps) {
         introLayer.style.visibility = 'visible'
       }
 
-      // 4. Actual video scrubbing begins ONLY after intro dissolve finishes
+      // 4. Actual video scrubbing begins as dissolve finishes
       const scrubStart = dissolveStart + dissolveDuration
       let targetFrame = 0
       if (current >= scrubStart) {
@@ -246,26 +240,11 @@ export default function City({ id = 'city' }: CityProps) {
       const shouldPlayAudio = !isAbove && !isBelow
 
       if (shouldPlayAudio) {
-        if (audio.paused) {
-          audio.play().catch(() => {
-            const resume = () => {
-              if (!audioRef.current) return
-              const r = section.getBoundingClientRect()
-              const curAbove = (current ?? 0) < scrubStart || r.top > 0
-              const curBelow = -r.top >= range || r.bottom <= 0
-              if (!curAbove && !curBelow) {
-                audioRef.current.play().catch(() => {})
-              }
-            }
-            window.addEventListener('scroll', resume, { once: true, passive: true })
-            window.addEventListener('pointerdown', resume, { once: true, passive: true })
-          })
-        }
+        playKolkataMusic()
+        if (!isPlayingAudio) setIsPlayingAudio(true)
       } else {
-        if (!audio.paused) {
-          audio.pause()
-          audio.currentTime = 0
-        }
+        pauseKolkataMusic()
+        if (isPlayingAudio) setIsPlayingAudio(false)
       }
 
       frame = requestAnimationFrame(tick)
@@ -274,8 +253,8 @@ export default function City({ id = 'city' }: CityProps) {
     frame = requestAnimationFrame(tick)
 
     const onVisibilityChange = () => {
-      if (document.hidden && audioRef.current && !audioRef.current.paused) {
-        audioRef.current.pause()
+      if (document.hidden) {
+        pauseKolkataMusic()
       }
     }
     document.addEventListener('visibilitychange', onVisibilityChange)
@@ -284,12 +263,7 @@ export default function City({ id = 'city' }: CityProps) {
       cancelAnimationFrame(frame)
       window.removeEventListener('resize', resizeCanvas)
       document.removeEventListener('visibilitychange', onVisibilityChange)
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current.currentTime = 0
-        audioRef.current.src = ''
-        audioRef.current = null
-      }
+      pauseKolkataMusic()
     }
   }, [])
 
@@ -320,6 +294,28 @@ export default function City({ id = 'city' }: CityProps) {
             SCROLL TO EXPLORE
           </div>
         </div>
+
+        {/* Subtle Vice City Radio indicator / toggle */}
+        <button
+          type="button"
+          className={`city__audio-badge ${isPlayingAudio ? 'city__audio-badge--active' : ''}`}
+          onClick={() => {
+            if (isKolkataMusicPlaying()) {
+              pauseKolkataMusic()
+              setIsPlayingAudio(false)
+            } else {
+              playKolkataMusic()
+              setIsPlayingAudio(true)
+            }
+          }}
+          aria-label={isPlayingAudio ? 'Mute Kolkata audio' : 'Play Kolkata audio'}
+          title="KOLKATA CITY FM"
+        >
+          <span className="city__audio-icon">{isPlayingAudio ? '🔊' : '🔇'}</span>
+          <span className="city__audio-text">
+            {isPlayingAudio ? 'KOLKATA FM • PLAYING' : 'KOLKATA FM • SOUND ON'}
+          </span>
+        </button>
       </div>
     </section>
   )
