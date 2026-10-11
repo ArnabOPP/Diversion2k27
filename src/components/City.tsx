@@ -17,6 +17,8 @@ interface CityProps {
   id?: string
 }
 
+const LINE1_TEXT = 'GTA ARRIVES IN KOLKATA CITY'
+
 export default function City({ id = 'city' }: CityProps) {
   const sectionRef = useRef<HTMLElement>(null)
   const stickyRef = useRef<HTMLDivElement>(null)
@@ -25,6 +27,7 @@ export default function City({ id = 'city' }: CityProps) {
   const introLayerRef = useRef<HTMLDivElement>(null)
   const line1Ref = useRef<HTMLDivElement>(null)
   const line2Ref = useRef<HTMLDivElement>(null)
+  const charsRef = useRef<(HTMLSpanElement | null)[]>([])
 
   const imagesRef = useRef<HTMLImageElement[]>([])
   const lastDrawnIndexRef = useRef<number>(-1)
@@ -158,28 +161,37 @@ export default function City({ id = 'city' }: CityProps) {
 
       // ==========================================
       // TIMELINE STAGES:
-      // 0.0 - 1.0 vh: First line appears ("GTA ARRIVES IN KOLKATA CITY")
-      // 1.0 - 2.0 vh: Second line appears ("SCROLL TO EXPLORE")
-      // 2.0 - 2.8 vh: Hold text on black screen
-      // 2.8 - 3.8 vh: Text fades out & black screen dissolves to reveal drone footage
-      // 3.8 vh onwards: Actual scroll-scrubbing of the 288 frames begins!
+      // 0.0 - 1.5 vh: Line 1 letters appear one by one on scroll
+      // 1.5 - 2.5 vh: Line 2 appears ("SCROLL TO EXPLORE")
+      // 2.5 - 3.2 vh: Hold text on black screen
+      // 3.2 - 4.2 vh: Text dissolves & black screen fades to reveal drone video
+      // 4.2 vh onwards: Actual scroll-scrubbing of the 288 frames begins!
       // ==========================================
 
-      // 1. Line 1: Fades & slides up on scroll
-      const line1Progress = clamp(current / (vh * 1.0))
-      const line1Eased = ease(line1Progress)
-      line1.style.opacity = String(line1Eased)
-      line1.style.transform = `translateY(${(1 - line1Eased) * 32}px)`
+      // 1. Line 1: Letters appear one by one on scroll
+      const line1Duration = vh * 1.5
+      const line1Progress = clamp(current / line1Duration)
+      const totalChars = LINE1_TEXT.length
 
-      // 2. Line 2: Fades & slides up after Line 1
-      const line2Start = vh * 1.0
+      charsRef.current.forEach((charEl, idx) => {
+        if (!charEl) return
+        const start = (idx / totalChars) * 0.72
+        const duration = 0.28
+        const p = clamp((line1Progress - start) / duration)
+        const eased = ease(p)
+        charEl.style.opacity = String(eased)
+        charEl.style.transform = `translateY(${(1 - eased) * 26}px) scale(${0.88 + eased * 0.12})`
+      })
+
+      // 2. Line 2: Fades & slides up after Line 1 completes
+      const line2Start = line1Duration
       const line2Progress = clamp((current - line2Start) / (vh * 1.0))
       const line2Eased = ease(line2Progress)
       line2.style.opacity = String(line2Eased)
       line2.style.transform = `translateY(${(1 - line2Eased) * 32}px)`
 
       // 3. Intro fade-out & Black screen dissolve
-      const dissolveStart = vh * 2.8
+      const dissolveStart = line2Start + vh * 1.6
       const dissolveDuration = vh * 1.0
       const dissolveProgress = clamp((current - dissolveStart) / dissolveDuration)
       const dissolveEased = ease(dissolveProgress)
@@ -239,7 +251,17 @@ export default function City({ id = 'city' }: CityProps) {
         {/* Intro text sequence */}
         <div ref={introLayerRef} className="city__intro">
           <div ref={line1Ref} className="city-intro__line1">
-            GTA ARRIVES IN KOLKATA CITY
+            {LINE1_TEXT.split('').map((char, i) => (
+              <span
+                key={i}
+                ref={(el) => {
+                  charsRef.current[i] = el
+                }}
+                className={`city-intro__char ${char === ' ' ? 'city-intro__char--space' : ''}`}
+              >
+                {char === ' ' ? '\u00A0' : char}
+              </span>
+            ))}
           </div>
           <div ref={line2Ref} className="city-intro__line2">
             SCROLL TO EXPLORE
