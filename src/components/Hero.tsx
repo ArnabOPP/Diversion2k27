@@ -32,6 +32,7 @@ export default function Hero({ active = true }: HeroProps) {
   const curtainTopRef = useRef<HTMLDivElement>(null)
   const curtainBottomRef = useRef<HTMLDivElement>(null)
   const curtainPromptRef = useRef<HTMLButtonElement>(null)
+  const curtainBorderRef = useRef<HTMLDivElement>(null)
   const [ended, setEnded] = useState(false)
   const endedRef = useRef(false)
 
@@ -119,6 +120,11 @@ export default function Hero({ active = true }: HeroProps) {
         const pOpacity = clamp(1 - curtainProgress * 2.8)
         curtainPromptRef.current.style.opacity = String(pOpacity)
         curtainPromptRef.current.style.pointerEvents = pOpacity > 0.1 ? 'auto' : 'none'
+      }
+
+      if (curtainBorderRef.current) {
+        const bOpacity = clamp(1 - curtainProgress * 2.5)
+        curtainBorderRef.current.style.opacity = String(bOpacity)
       }
 
       if (curtainProgress >= CURTAIN_OPEN_THRESHOLD) {
@@ -263,6 +269,14 @@ export default function Hero({ active = true }: HeroProps) {
           </div>
           <div ref={curtainBottomRef} className="curtain__panel curtain__panel--bottom">
             <img className="curtain__media" src="/curtain.jpg" alt="Diversion 2K27" />
+          </div>
+
+          {/* Light purple glow moving around the border in a rectangle */}
+          <div ref={curtainBorderRef} className="curtain__border-glow" aria-hidden="true">
+            <span className="curtain__glow-line curtain__glow-line--top" />
+            <span className="curtain__glow-line curtain__glow-line--right" />
+            <span className="curtain__glow-line curtain__glow-line--bottom" />
+            <span className="curtain__glow-line curtain__glow-line--left" />
           </div>
 
           <button
