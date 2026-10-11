@@ -1,4 +1,4 @@
-/* About section (with Kolkata video frames and About Diversion text) */
+/* About section (with car video and About Diversion text) */
 .scroll-video {
   position: relative;
   height: 600vh;
@@ -28,7 +28,7 @@
   will-change: opacity, transform;
 }
 
-/* About text layer positioned directly over the Kolkata video */
+/* About text layer positioned directly over the car video */
 .scroll-video__layer--about {
   display: flex;
   align-items: center;

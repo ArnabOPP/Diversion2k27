@@ -4,6 +4,8 @@
   position: relative;
   z-index: 2;
   margin-top: 0;
+  min-height: 100vh;
+  box-sizing: border-box;
   padding: clamp(4rem, 10vh, 7rem) clamp(1.25rem, 5vw, 4rem);
   color: #fff;
   font-family: 'DM Sans', system-ui, sans-serif;
