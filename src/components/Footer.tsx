@@ -8,7 +8,6 @@ const SOCIALS = [
 
 const LINKS = [
   { label: 'IEM-ACM Student Chapter', href: '#' },
-  { label: 'MLH Code of Conduct', href: 'https://mlh.io/code-of-conduct' },
   { label: 'Privacy', href: '#' },
   { label: 'Contact', href: '#contact' },
   { label: 'FAQ', href: '#faq' },
