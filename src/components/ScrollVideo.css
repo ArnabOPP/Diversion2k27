@@ -1,3 +1,10 @@
+/* Pricedown GTA Font */
+@font-face {
+  font-family: 'Pricedown';
+  src: url('/Pricedown%20Bl.otf') format('opentype');
+  font-display: swap;
+}
+
 /* About section (with car video and About Diversion text) */
 .scroll-video {
   position: relative;
@@ -58,10 +65,13 @@
 
 .scroll-about__title {
   margin: 0;
-  font: 400 clamp(3.4rem, 6.5vw, 5.2rem) / 1 'Bebas Neue', Impact, sans-serif;
-  color: #e8e4c8;
+  font-family: 'Pricedown', 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(3.2rem, 6.5vw, 5.2rem);
+  font-weight: 400;
+  line-height: 1.05;
+  color: #fff;
   letter-spacing: 0.04em;
-  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.95), 0 0 24px rgba(232, 228, 200, 0.3);
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.95), 0 0 24px rgba(255, 255, 255, 0.3);
 }
 
 .scroll-about__tagline {

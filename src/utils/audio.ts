@@ -121,8 +121,12 @@ export function getKolkataAudio(): HTMLAudioElement {
     const existing = document.getElementById('kolkata-audio') as HTMLAudioElement
     if (existing) {
       kolkataAudio = existing
+      if (!kolkataAudio.src.includes('city-1.mp3')) {
+        kolkataAudio.src = '/city-1.mp3'
+        kolkataAudio.load()
+      }
     } else {
-      kolkataAudio = new Audio('/kolkata.mp3')
+      kolkataAudio = new Audio('/city-1.mp3')
       kolkataAudio.id = 'kolkata-audio'
       document.body.appendChild(kolkataAudio)
     }

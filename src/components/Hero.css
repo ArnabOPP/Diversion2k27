@@ -386,33 +386,107 @@
 
 .curtain__prompt {
   position: absolute;
-  top: 88%;
+  top: 83%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  padding: 14px 44px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 1.5px;
+  background: transparent;
+  border: none;
   border-radius: 999px;
-  color: #fff;
-  font-family: 'Pricedown', 'Bebas Neue', Impact, sans-serif;
-  font-size: 26px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
   cursor: pointer;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.55), 0 0 16px rgba(168, 85, 247, 0.35);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   user-select: none;
   animation: curtain-prompt-pulse 2.2s infinite ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Moving neon purple border glow */
+.curtain__prompt::before {
+  content: '';
+  position: absolute;
+  inset: -250%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 45deg,
+    rgba(192, 132, 252, 0.2) 70deg,
+    #c084fc 95deg,
+    #f5d0fe 108deg,
+    #ffffff 112deg,
+    #f5d0fe 116deg,
+    #c084fc 128deg,
+    rgba(192, 132, 252, 0.2) 150deg,
+    transparent 175deg,
+    transparent 360deg
+  );
+  animation: button-glow-rotate 3.6s linear infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Inner backdrop layer masking the inside of the button */
+.curtain__prompt::after {
+  content: '';
+  position: absolute;
+  inset: 1.5px;
+  background: rgba(18, 10, 28, 0.78);
+  border-radius: 999px;
+  z-index: 2;
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  box-shadow: inset 0 0 16px rgba(168, 85, 247, 0.22);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+/* Button text with GTA neon purple styling */
+.curtain__prompt-inner {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 32px;
+  font-family: 'Pricedown', 'Bebas Neue', Impact, sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #d8b4fe;
+  text-shadow: 0 0 10px rgba(192, 132, 252, 0.85), 0 0 20px rgba(168, 85, 247, 0.6), 0 2px 4px rgba(0, 0, 0, 0.95);
+  white-space: nowrap;
+  pointer-events: none;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
 }
 
 .curtain__prompt:hover {
-  background: rgba(255, 255, 255, 0.18);
-  border-color: rgba(255, 255, 255, 0.75);
+  animation-play-state: paused;
   transform: translate(-50%, -50%) scale(1.05);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 255, 255, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 24px rgba(192, 132, 252, 0.7);
+}
+
+.curtain__prompt:hover::after {
+  background: rgba(26, 12, 40, 0.88);
+  border-color: rgba(216, 180, 254, 0.6);
+}
+
+.curtain__prompt:hover .curtain__prompt-inner {
+  color: #f5d0fe;
+  text-shadow: 0 0 16px rgba(216, 180, 254, 1), 0 0 32px rgba(192, 132, 252, 0.9), 0 2px 4px rgba(0, 0, 0, 0.95);
+}
+
+@keyframes button-glow-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes curtain-prompt-pulse {
@@ -426,10 +500,13 @@
 
 @media (max-width: 768px) {
   .curtain__prompt {
-    top: 86%;
-    padding: clamp(6px, 1.8vw, 9px) clamp(16px, 4.5vw, 22px);
-    font-size: clamp(13px, 3.8vw, 16px);
-    letter-spacing: 0.09em;
+    top: 77%;
+  }
+
+  .curtain__prompt-inner {
+    padding: clamp(9px, 2.6vw, 14px) clamp(24px, 6vw, 36px);
+    font-size: clamp(16px, 4.8vw, 21px);
+    letter-spacing: 0.1em;
   }
 }
 

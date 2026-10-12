@@ -8,6 +8,7 @@ import Schedule from '@/components/Schedule'
 import ScrubVideo from '@/components/ScrubVideo'
 import Visit from '@/components/Visit'
 import City from '@/components/City'
+import PastGlimpses from '@/components/PastGlimpses'
 import ScrollVideo from '@/components/ScrollVideo'
 import Start from '@/components/Start'
 
@@ -82,6 +83,7 @@ export default function App() {
             <ScrubVideo src="/video%206%20scrub.mp4" />
           </>
         ) : null}
+        <PastGlimpses id="past-glimpses" />
         <Coming />
       </div>
       {isStart ? (

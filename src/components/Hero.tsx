@@ -34,6 +34,7 @@ export default function Hero({ active = true }: HeroProps) {
   const curtainBottomRef = useRef<HTMLDivElement>(null)
   const curtainPromptRef = useRef<HTMLButtonElement>(null)
   const curtainBorderRef = useRef<HTMLDivElement>(null)
+  const hasOpenedRef = useRef<boolean>(false)
   const [ended, setEnded] = useState(false)
   const endedRef = useRef(false)
   const [showTitleLogo, setShowTitleLogo] = useState(false)
@@ -109,6 +110,9 @@ export default function Hero({ active = true }: HeroProps) {
   const handleEnterCity = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation()
 
+    // Unlock scrolling for this session once button is pressed
+    hasOpenedRef.current = true
+
     // Stop GTA theme music immediately when curtain begins opening
     stopGtaMusic()
 
@@ -136,9 +140,54 @@ export default function Hero({ active = true }: HeroProps) {
     let frame = 0
     let curtainWasOpen = false
 
+    // Prevent scrolling from opening the curtain until the ENTER CITY button is pressed
+    const onWheel = (e: WheelEvent) => {
+      if (!hasOpenedRef.current) {
+        e.preventDefault()
+      }
+    }
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!hasOpenedRef.current) {
+        e.preventDefault()
+      }
+    }
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (!hasOpenedRef.current) {
+        if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', ' ', 'Space', 'Home', 'End'].includes(e.key)) {
+          if (
+            (e.key === ' ' || e.key === 'Space' || e.key === 'Enter') &&
+            document.activeElement === curtainPromptRef.current
+          ) {
+            return
+          }
+          const tag = (document.activeElement?.tagName || '').toLowerCase()
+          if (tag !== 'input' && tag !== 'textarea') {
+            e.preventDefault()
+          }
+        }
+      }
+    }
+
+    const onScroll = () => {
+      if (!hasOpenedRef.current && window.scrollY > 0) {
+        window.scrollTo(0, 0)
+      }
+    }
+
+    if (!hasOpenedRef.current && window.scrollY > 0) {
+      window.scrollTo(0, 0)
+    }
+
+    window.addEventListener('wheel', onWheel, { passive: false })
+    window.addEventListener('touchmove', onTouchMove, { passive: false })
+    window.addEventListener('keydown', onKeyDown, { passive: false })
+    window.addEventListener('scroll', onScroll, { passive: true })
+
     const tick = () => {
       const vh = window.innerHeight
-      const scrolled = -section.getBoundingClientRect().top
+      const scrolled = hasOpenedRef.current ? -section.getBoundingClientRect().top : 0
       const range = section.offsetHeight - vh
       const target = Math.min(range, Math.max(0, scrolled))
       current = current === null ? target : current + (target - current) * SMOOTHING
@@ -236,6 +285,10 @@ export default function Hero({ active = true }: HeroProps) {
     return () => {
       cancelAnimationFrame(frame)
       document.removeEventListener('visibilitychange', onVisibility)
+      window.removeEventListener('wheel', onWheel)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.removeEventListener('keydown', onKeyDown)
+      window.removeEventListener('scroll', onScroll)
       pauseHeroMusic()
       if (videoRef.current && !videoRef.current.paused) {
         videoRef.current.pause()
@@ -339,7 +392,7 @@ export default function Hero({ active = true }: HeroProps) {
             type="button"
             onClick={handleEnterCity}
           >
-            ENTER CITY
+            <span className="curtain__prompt-inner">ENTER CITY</span>
           </button>
         </div>
       </div>

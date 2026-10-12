@@ -1,13 +1,9 @@
 import './Footer.css'
 
-// Social links: the hrefs are placeholders until the real profiles are known
 const SOCIALS = [
-  { name: 'X', href: '#' },
-  { name: 'Instagram', href: '#' },
-  { name: 'YouTube', href: '#' },
-  { name: 'LinkedIn', href: '#' },
-  { name: 'Facebook', href: '#' },
-  { name: 'Discord', href: '#' },
+  { name: 'X', href: 'https://x.com/Diversion2K27' },
+  { name: 'Instagram', href: 'https://www.instagram.com/diversion_iem_acm/?hl=en' },
+  { name: 'LinkedIn', href: 'https://www.linkedin.com/company/acm-iem' },
 ]
 
 const LINKS = [
@@ -44,13 +40,6 @@ function SocialIcon({ name }: { name: string }) {
           <path d="M17.5 6.5h.01" />
         </svg>
       )
-    case 'YouTube':
-      return (
-        <svg {...common} aria-hidden>
-          <rect x="2.5" y="5.5" width="19" height="13" rx="4" />
-          <path d="M10 9.5l5 2.5-5 2.5z" fill="currentColor" />
-        </svg>
-      )
     case 'LinkedIn':
       return (
         <svg {...common} aria-hidden>
@@ -58,20 +47,8 @@ function SocialIcon({ name }: { name: string }) {
           <path d="M8 11v5M8 8h.01M12 16v-5M12 13a2.5 2.5 0 0 1 5 0v3" />
         </svg>
       )
-    case 'Facebook':
-      return (
-        <svg {...common} aria-hidden>
-          <path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v6h4v-6h3l1-4h-4V8z" />
-        </svg>
-      )
     default:
-      // Discord: a speech bubble with two eyes
-      return (
-        <svg {...common} aria-hidden>
-          <path d="M20 12a8 8 0 0 1-11.6 7.1L4 20l1-4.2A8 8 0 1 1 20 12z" />
-          <path d="M9 11.5h.01M15 11.5h.01" />
-        </svg>
-      )
+      return null
   }
 }
 
@@ -91,7 +68,7 @@ export default function Footer() {
       <ul className="footer__socials">
         {SOCIALS.map((s) => (
           <li key={s.name}>
-            <a href={s.href} aria-label={s.name}>
+            <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.name}>
               <SocialIcon name={s.name} />
             </a>
           </li>

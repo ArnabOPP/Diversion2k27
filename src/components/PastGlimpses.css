@@ -1,0 +1,203 @@
+/* Past Glimpses: Automatic card carousel of Diversion 2K26 memories */
+.past-glimpses {
+  position: relative;
+  z-index: 3;
+  padding: clamp(4.5rem, 9vh, 7rem) 0 clamp(5rem, 10vh, 8rem);
+  background: radial-gradient(ellipse at 50% 0%, #1c122e 0%, #0c0816 55%, #05040a 100%);
+  color: #fff;
+  font-family: 'DM Sans', system-ui, sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Subtle top and bottom divider lines with glowing purple gradient */
+.past-glimpses::before,
+.past-glimpses::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(192, 132, 252, 0.4) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+.past-glimpses::before {
+  top: 0;
+}
+
+.past-glimpses::after {
+  bottom: 0;
+}
+
+/* Background ambient glow */
+.past-glimpses__bg-glow {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 75vw;
+  height: 45vh;
+  background: radial-gradient(ellipse, rgba(168, 85, 247, 0.15) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Header */
+.past-glimpses__header {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto clamp(2.5rem, 5vh, 4rem);
+  padding: 0 clamp(1.25rem, 4vw, 2.5rem);
+}
+
+.past-glimpses__title {
+  margin: 0;
+  font-family: 'Pricedown', 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(3.2rem, 7.5vw, 5.8rem);
+  line-height: 1.05;
+  letter-spacing: 0.05em;
+  color: #fff;
+  text-transform: uppercase;
+  text-shadow: 0 4px 26px rgba(0, 0, 0, 0.95), 0 0 38px rgba(192, 132, 252, 0.45);
+}
+
+.past-glimpses__tagline {
+  margin: 1.1rem auto 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+  line-height: 1.5;
+  color: #d8b4fe;
+  max-width: 640px;
+  text-shadow: 0 0 14px rgba(192, 132, 252, 0.4), 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+/* Carousel Tracks Container */
+.past-glimpses__carousel {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.2rem, 2.5vw, 2rem);
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Track row */
+.glimpses-track {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+}
+
+.glimpses-track__inner {
+  display: flex;
+  gap: clamp(1.1rem, 2vw, 1.8rem);
+  width: max-content;
+  will-change: transform;
+}
+
+/* Row 1 moves to the left */
+.glimpses-track__inner--left {
+  animation: scroll-glimpses-left 44s linear infinite;
+}
+
+/* Row 2 moves to the right */
+.glimpses-track__inner--right {
+  animation: scroll-glimpses-right 40s linear infinite;
+}
+
+/* Pause on hover */
+.glimpses-track:hover .glimpses-track__inner {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-glimpses-left {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes scroll-glimpses-right {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Card Style for Images */
+.glimpse-card {
+  position: relative;
+  flex: 0 0 clamp(240px, 24vw, 360px);
+  aspect-ratio: 16 / 10;
+  border-radius: 18px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  user-select: none;
+  cursor: default;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.glimpse-card:hover {
+  transform: translate3d(0, -6px, 0) scale(1.02);
+  border-color: rgba(216, 180, 254, 0.6);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(192, 132, 252, 0.35);
+}
+
+.glimpse-card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.01);
+  transition: transform 0.45s ease;
+  pointer-events: none;
+}
+
+.glimpse-card:hover .glimpse-card__img {
+  transform: scale(1.06);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .past-glimpses {
+    padding: clamp(3.5rem, 8vh, 5rem) 0 clamp(4rem, 8vh, 6rem);
+  }
+
+  .past-glimpses__header {
+    margin-bottom: 2rem;
+  }
+
+  .past-glimpses__title {
+    font-size: clamp(2.4rem, 10vw, 3.8rem);
+  }
+
+  .past-glimpses__tagline {
+    font-size: 1rem;
+    margin-top: 0.8rem;
+  }
+
+  .past-glimpses__carousel {
+    gap: 1.1rem;
+  }
+
+  .glimpses-track__inner {
+    gap: 1rem;
+  }
+
+  .glimpse-card {
+    flex: 0 0 clamp(220px, 68vw, 290px);
+    border-radius: 14px;
+  }
+}
