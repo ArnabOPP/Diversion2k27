@@ -20,7 +20,7 @@ const TIERS: Tier[] = [
     partners: [
       {
         name: 'Devfolio',
-        logo: '/devfolio-logo.webp?v=2',
+        logo: '/Devfolio_Logo-Colored.svg',
         url: 'https://devfolio.co',
       },
     ],

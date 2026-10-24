@@ -297,6 +297,19 @@ export default function Hero({ active = true }: HeroProps) {
     }
   }, [])
 
+  // Load Devfolio Apply Button SDK when actions are visible
+  useEffect(() => {
+    if (!ended) return
+    const script = document.createElement('script')
+    script.src = 'https://apply.devfolio.co/v2/sdk.js'
+    script.async = true
+    script.defer = true
+    document.body.appendChild(script)
+    return () => {
+      document.body.removeChild(script)
+    }
+  }, [ended])
+
   const playAgain = () => {
     const video = videoRef.current
     if (!video) return
@@ -349,9 +362,12 @@ export default function Hero({ active = true }: HeroProps) {
               </button>
 
               <div className="hero__actions">
-                <button className="hero__btn hero__btn--register" type="button">
-                  REGISTRATIONS OPENING SOON
-                </button>
+                <div
+                  className="apply-button"
+                  data-hackathon-slug="diversion2k27"
+                  data-button-theme="light"
+                  style={{ height: '44px', width: '312px' }}
+                ></div>
                 <button className="hero__btn hero__btn--brochure" type="button">
                   BROCHURE COMING SOON
                 </button>

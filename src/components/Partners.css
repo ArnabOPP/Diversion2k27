@@ -73,7 +73,7 @@
 
 /* Filled partner box with real brand logo sized to logo dimensions */
 .partners__box--filled {
-  aspect-ratio: 853 / 233;
+  aspect-ratio: 308 / 92;
   width: 100%;
   border-style: solid;
   border-color: color-mix(in srgb, var(--tier, #f3c969) 70%, transparent);
@@ -98,7 +98,7 @@
   justify-content: center;
   width: 100%;
   height: 100%;
-  padding: 0;
+  padding: clamp(0.75rem, 1.8vw, 1rem) clamp(1.2rem, 3vw, 1.8rem);
   box-sizing: border-box;
   text-decoration: none;
 }
@@ -107,6 +107,7 @@
   display: block;
   width: 100%;
   height: 100%;
+  max-height: 48px;
   object-fit: contain;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
