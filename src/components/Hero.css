@@ -138,10 +138,11 @@
   height: clamp(52px, 7.8vw, 102px);
   width: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 10px rgba(255, 255, 255, 0.85)) drop-shadow(0 4px 14px rgba(0, 0, 0, 0.55));
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.95)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.65));
   transition: transform 0.25s ease, filter 0.25s ease;
   user-select: none;
   pointer-events: auto;
+  image-rendering: -webkit-optimize-contrast;
 }
 
 .hero__logo--acm {
@@ -150,7 +151,7 @@
 
 .hero__logo:hover {
   transform: translateY(-3px) scale(1.06);
-  filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.98)) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.7));
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 1)) drop-shadow(0 4px 14px rgba(0, 0, 0, 0.75));
 }
 
 @keyframes hero-logos-fade-in {

@@ -84,6 +84,7 @@ export default function App() {
           </>
         ) : null}
         <PastGlimpses id="past-glimpses" />
+        <Partners id="partners" />
         <Coming />
       </div>
       {isStart ? (

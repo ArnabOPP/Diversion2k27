@@ -339,9 +339,9 @@ export default function Hero({ active = true }: HeroProps) {
           {ended && (
             <>
               <div className="hero__logos">
-                <img className="hero__logo hero__logo--iem" src="/iem-logo.png" alt="IEM Logo" />
-                <img className="hero__logo hero__logo--acm" src="/acm-logo.png" alt="ACM Chapter IEM Logo" />
-                <img className="hero__logo hero__logo--uem" src="/uem-logo.png" alt="UEM Logo" />
+                <img className="hero__logo hero__logo--iem" src="/iem-logo.png?v=2" alt="IEM Logo" />
+                <img className="hero__logo hero__logo--acm" src="/acm-logo.png?v=2" alt="ACM Chapter IEM Logo" />
+                <img className="hero__logo hero__logo--uem" src="/uem-logo.png?v=2" alt="UEM Logo" />
               </div>
 
               <button className="hero__replay" onClick={playAgain} aria-label="Play again">

@@ -24,7 +24,8 @@
 
 .partners__tier--gold {
   --tier: #f3c969;
-  width: 86%;
+  width: min(100%, 360px);
+  margin-inline: auto;
 }
 
 .partners__tier--silver {
@@ -34,20 +35,12 @@
 .partners__tier-name {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  margin: 0 0 1rem;
-  font: 400 clamp(1.5rem, 2.4vw, 2rem) / 1 'Bebas Neue', Impact, sans-serif;
-  letter-spacing: 0.06em;
+  justify-content: center;
+  margin: 0 0 1.25rem;
+  font: 400 clamp(2.4rem, 4.4vw, 3.4rem) / 1 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: 0.08em;
   color: var(--tier);
-}
-
-/* a thin line after the tier name */
-.partners__tier-name::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--tier);
-  opacity: 0.35;
+  text-shadow: 0 0 20px color-mix(in srgb, var(--tier, #f3c969) 35%, transparent);
 }
 
 .partners__grid {
@@ -76,6 +69,50 @@
 .partners__label {
   font: 500 clamp(0.75rem, 1.1vw, 0.95rem) 'DM Sans', system-ui, sans-serif;
   color: rgb(241 241 245 / 0.55);
+}
+
+/* Filled partner box with real brand logo sized to logo dimensions */
+.partners__box--filled {
+  aspect-ratio: 853 / 233;
+  width: 100%;
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--tier, #f3c969) 70%, transparent);
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 18px color-mix(in srgb, var(--tier, #f3c969) 25%, transparent);
+  padding: 0;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.partners__box--filled:hover {
+  border-color: var(--tier, #f3c969);
+  background: #ffffff;
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.5), 0 0 28px color-mix(in srgb, var(--tier, #f3c969) 50%, transparent);
+}
+
+.partners__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+.partners__logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.partners__box--filled:hover .partners__logo {
+  transform: scale(1.03);
 }
 
 /* Community partners: a separate block below the tiers */

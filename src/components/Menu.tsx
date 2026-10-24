@@ -9,7 +9,7 @@ const ITEMS: { label: string; target: string | null }[] = [
   { label: 'Past Glimpses', target: 'past-glimpses' },
   { label: 'Prizes', target: 'visit-4' },
   { label: 'Schedule', target: 'schedule' },
-  { label: 'Partners', target: 'about-4' },
+  { label: 'Partners', target: 'partners' },
   { label: 'FAQ', target: 'faq' },
   { label: 'Contact', target: 'contact' },
 ]
