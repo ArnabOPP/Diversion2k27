@@ -31,6 +31,7 @@ export default function Coming({ id = 'coming' }: ComingProps) {
       const progress = range > 0 ? clamp(-pin.getBoundingClientRect().top / range) : 0
       const shrink = ease(clamp((progress - HOLD_START) / SHRINK_SPAN))
       block.style.transform = `scale(${1 - (1 - MIN_SCALE) * shrink})`
+      block.style.setProperty('--coming-shift', `${clamp(progress) * 100}%`)
       frame = requestAnimationFrame(tick)
     }
 
