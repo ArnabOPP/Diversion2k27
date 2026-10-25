@@ -5,6 +5,7 @@ interface Partner {
   name: string
   logo: string
   url?: string
+  alt?: string
 }
 
 interface Tier {
@@ -22,6 +23,7 @@ const TIERS: Tier[] = [
         name: 'Devfolio',
         logo: '/Devfolio_Logo-Colored.svg',
         url: 'https://devfolio.co',
+        alt: 'DEVFOLIO LOGO',
       },
     ],
   },
@@ -51,7 +53,11 @@ export default function Partners({ id = 'partners' }: PartnersProps) {
                       className="partners__link"
                       aria-label={`${partner.name} - ${tier.name}`}
                     >
-                      <img src={partner.logo} alt={partner.name} className="partners__logo" />
+                      <img
+                        src={partner.logo}
+                        alt={partner.alt || partner.name}
+                        className="partners__logo"
+                      />
                     </a>
                   </li>
                 ))}

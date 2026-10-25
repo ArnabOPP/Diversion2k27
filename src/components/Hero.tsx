@@ -297,18 +297,22 @@ export default function Hero({ active = true }: HeroProps) {
     }
   }, [])
 
-  // Load Devfolio Apply Button SDK when actions are visible
+  // Load Devfolio Apply Button SDK on mount
   useEffect(() => {
-    if (!ended) return
+    if (document.querySelector('script[src="https://apply.devfolio.co/v2/sdk.js"]')) {
+      return
+    }
     const script = document.createElement('script')
     script.src = 'https://apply.devfolio.co/v2/sdk.js'
     script.async = true
     script.defer = true
     document.body.appendChild(script)
     return () => {
-      document.body.removeChild(script)
+      if (document.body.contains(script)) {
+        document.body.removeChild(script)
+      }
     }
-  }, [ended])
+  }, [])
 
   const playAgain = () => {
     const video = videoRef.current
@@ -360,20 +364,23 @@ export default function Hero({ active = true }: HeroProps) {
               <button className="hero__replay" onClick={playAgain} aria-label="Play again">
                 ▶ Play Again
               </button>
-
-              <div className="hero__actions">
-                <div
-                  className="apply-button"
-                  data-hackathon-slug="diversion2k27"
-                  data-button-theme="light"
-                  style={{ height: '44px', width: '312px' }}
-                ></div>
-                <button className="hero__btn hero__btn--brochure" type="button">
-                  BROCHURE COMING SOON
-                </button>
-              </div>
             </>
           )}
+
+          <div
+            className={`hero__actions ${ended ? 'hero__actions--visible' : 'hero__actions--hidden'}`}
+            aria-hidden={!ended}
+          >
+            <div
+              className="apply-button"
+              data-hackathon-slug="diversion2k27"
+              data-button-theme="light"
+              style={{ height: '44px', width: '312px' }}
+            ></div>
+            <button className="hero__btn hero__btn--brochure" type="button">
+              BROCHURE COMING SOON
+            </button>
+          </div>
         </div>
 
         <div

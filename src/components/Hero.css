@@ -165,7 +165,6 @@
   }
 }
 
-/* Action buttons below the Diversion logo — GTA Theme */
 .hero__actions {
   position: absolute;
   top: 77%;
@@ -179,6 +178,19 @@
   gap: 0.9rem;
   width: max-content;
   max-width: 90vw;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s;
+}
+
+.hero__actions--hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.hero__actions--visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
   animation: hero-actions-fade-in 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
