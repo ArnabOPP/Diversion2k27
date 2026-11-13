@@ -297,20 +297,61 @@ export default function Hero({ active = true }: HeroProps) {
     }
   }, [])
 
-  // Load Devfolio Apply Button SDK on mount
+  // Load Devfolio Apply Button SDK on mount and ensure reliable handshake
   useEffect(() => {
-    if (document.querySelector('script[src="https://apply.devfolio.co/v2/sdk.js"]')) {
-      return
+    const HACKATHON_DATA = {
+      uuid: '8cf5de84ec814a8daf7f6c4caf538045',
+      slug: 'diversion2k27',
+      name: 'Diversion 2k27',
+      regStartsAt: '2026-11-10T00:30:00.000Z',
+      regEndsAt: '2027-02-10T18:29:00.000Z',
+      endsAt: '2027-03-07T09:30:00.000Z',
+      devfolioOfficial: false,
     }
-    const script = document.createElement('script')
-    script.src = 'https://apply.devfolio.co/v2/sdk.js'
-    script.async = true
-    script.defer = true
-    document.body.appendChild(script)
-    return () => {
-      if (document.body.contains(script)) {
-        document.body.removeChild(script)
+
+    const sendDataToFrames = () => {
+      const iframes = document.querySelectorAll<HTMLIFrameElement>('.devfolio-button-iframe')
+      iframes.forEach((iframe) => {
+        try {
+          iframe.contentWindow?.postMessage({ type: 'SEND_HACKATHON_DATA', payload: HACKATHON_DATA }, '*')
+          iframe.contentWindow?.postMessage({ type: 'ENABLE_DEV_MODE' }, '*')
+        } catch {
+          // ignore cross-origin postMessage errors if any
+        }
+      })
+    }
+
+    const onMessage = (event: MessageEvent) => {
+      if (event.data?.type === 'BUTTON_IFRAME_LOADED') {
+        sendDataToFrames()
       }
+      if (event.data?.type === 'OPEN_OVERLAY') {
+        setTimeout(() => {
+          const overlay = document.querySelector('#devfolio-overlay-container') as HTMLElement | null
+          if (!overlay || overlay.style.display !== 'block') {
+            window.open('https://diversion2k27.devfolio.co', '_blank', 'noopener,noreferrer')
+          }
+        }, 150)
+      }
+    }
+
+    window.addEventListener('message', onMessage)
+
+    let script = document.querySelector<HTMLScriptElement>('script[src="https://apply.devfolio.co/v2/sdk.js"]')
+    if (!script) {
+      script = document.createElement('script')
+      script.src = 'https://apply.devfolio.co/v2/sdk.js'
+      script.async = true
+      script.defer = true
+      document.body.appendChild(script)
+    }
+
+    // Repeatedly notify frames during startup to defeat race conditions or CORS block on localhost
+    const interval = setInterval(sendDataToFrames, 300)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('message', onMessage)
     }
   }, [])
 
@@ -377,9 +418,6 @@ export default function Hero({ active = true }: HeroProps) {
               data-button-theme="light"
               style={{ height: '44px', width: '312px' }}
             ></div>
-            <button className="hero__btn hero__btn--brochure" type="button">
-              BROCHURE COMING SOON
-            </button>
           </div>
         </div>
 
